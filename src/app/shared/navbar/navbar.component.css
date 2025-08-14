@@ -1,0 +1,60 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-links a[mat-button] {
+  font-weight: 600;
+  color: white;
+  text-transform: none;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+.nav-links a[mat-button]:hover {
+  color: #cfd8dc;
+}
+
+.logout-btn {
+  color: white;
+}
+
+.logout-btn:hover {
+  color: #ffcdd2;
+}
+
+.logout-btn mat-icon {
+  font-size: 24px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .logout-btn {
+    align-self: flex-end;
+  }
+}

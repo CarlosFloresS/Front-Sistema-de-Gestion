@@ -1,0 +1,91 @@
+/* Contenedor principal del formulario */
+.form-container {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin: 3rem auto;
+  max-width: 600px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.form-container:hover {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* Título */
+.form-container h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1e293b; /* slate-800 */
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Campos del formulario */
+mat-form-field {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+/* Colores de foco y resaltado */
+mat-form-field.mat-form-field {
+  --mdc-filled-text-field-focus-active-indicator-color: #3b82f6;
+  --mdc-filled-text-field-hover-active-indicator-color: #2563eb;
+}
+
+/* Errores */
+mat-error {
+  font-size: 0.85rem;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+/* Botones */
+.form-container button {
+  min-width: 120px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  text-transform: none;
+}
+
+button[mat-button] {
+  color: #6b7280;
+}
+
+button[mat-flat-button] {
+  background-color: #3b82f6;
+  color: white;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+}
+
+button[mat-flat-button]:hover {
+  background-color: #2563eb;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+}
+
+/* Botonera */
+.flex.justify-end {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .form-container {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+
+  .flex.justify-end {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-container button {
+    width: 100%;
+  }
+}

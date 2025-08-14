@@ -1,0 +1,59 @@
+<app-navbar></app-navbar>
+
+<mat-card class="max-w-md mx-auto mt-8 p-6">
+  <h2 class="text-xl font-semibold mb-6">Registrar Venta</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <!-- Autocomplete de Productos con stock > 0 -->
+    <mat-form-field appearance="outline" class="w-full mb-4">
+      <mat-label>Buscar producto</mat-label>
+      <input
+        matInput
+        formControlName="producto"
+        [matAutocomplete]="auto"a
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        [displayWith]="displayFn.bind(this)"
+        (optionSelected)="onProductSelected($event)"
+      >
+        <mat-option
+          *ngFor="let prod of filteredProducts$ | async"
+          [value]="prod"
+        >
+          {{ prod.nombre }} ({{ prod.stock }} disponibles)
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="form.get('producto')?.hasError('required')">
+        Selecciona un producto.
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Cantidad con validación contra stock -->
+    <mat-form-field appearance="outline" class="w-full mb-4">
+      <mat-label>Cantidad</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="cantidad"
+        min="1"
+      />
+      <mat-error *ngIf="form.get('cantidad')?.hasError('required')">
+        La cantidad es obligatoria.
+      </mat-error>
+      <mat-error *ngIf="form.get('cantidad')?.hasError('min')">
+        Debe ser al menos 1.
+      </mat-error>
+      <mat-error *ngIf="form.get('cantidad')?.hasError('exceedStock')">
+        No puedes vender más que el stock disponible.
+      </mat-error>
+    </mat-form-field>
+
+    <div class="flex justify-end gap-4 mt-6">
+      <button mat-button type="button" (click)="cancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+        Vender Ahora
+      </button>
+    </div>
+  </form>
+</mat-card>

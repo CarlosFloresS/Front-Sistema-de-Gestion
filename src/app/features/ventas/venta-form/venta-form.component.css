@@ -1,0 +1,82 @@
+mat-card {
+  max-width: 720px;
+  margin: 60px auto;
+  padding: 40px;
+  background: linear-gradient(135deg, #1e1f2f, #2b2c3f);
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  color: #f0f0f0;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+h2 {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  color: #00e1ff;
+  margin-bottom: 36px;
+  letter-spacing: 0.5px;
+}
+
+/* Campos */
+mat-form-field {
+  width: 100%;
+  margin-bottom: 28px;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(255, 255, 255, 0.1);
+}
+
+.mat-form-field-flex {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.mat-form-field-label {
+  color: #c0c0c0 !important;
+}
+
+.mat-input-element,
+.mat-select-value-text {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+textarea[matInput] {
+  color: #ffffff;
+}
+
+/* Botones */
+.flex {
+  display: flex;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.gap-4 {
+  gap: 16px;
+  margin-top: 32px;
+}
+
+button[type="submit"] {
+  padding: 10px 24px;
+  font-weight: 700;
+  background: #00e1ff;
+  color: #1c1c2c;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #00c0d4;
+}
+
+button[type="button"] {
+  color: #ccc;
+  font-weight: 500;
+}
+

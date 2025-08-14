@@ -1,0 +1,101 @@
+mat-card {
+  max-width: 920px;
+  margin: 60px auto;
+  padding: 40px;
+  background: linear-gradient(135deg, #1e1f2f, #2b2c3f);
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  color: #f1f1f1;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+
+  h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #00e1ff;
+    margin: 0;
+  }
+
+  button {
+    font-weight: 600;
+    background-color: #00e1ff;
+    color: #1c1c2c;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background-color: #00c0d4;
+    }
+  }
+}
+
+p {
+  margin-bottom: 24px;
+  color: #ccc;
+  font-size: 14px;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 24px;
+
+  .mat-form-field-flex {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+  }
+
+  .mat-form-field-label {
+    color: #c0c0c0 !important;
+  }
+
+  input.mat-input-element {
+    color: #fff;
+  }
+
+  mat-icon {
+    color: #a0a0a0;
+  }
+}
+
+table.mat-table {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  overflow: hidden;
+
+  th {
+    color: #00e1ff;
+    font-weight: 600;
+    background: #2b2c3f;
+  }
+
+  td {
+    color: #e0e0e0;
+  }
+
+  tr.mat-row:hover {
+    background-color: rgba(0, 225, 255, 0.05);
+  }
+}
+
+.mat-icon-button {
+  color: #00bcd4;
+}
+
+mat-paginator {
+  color: #c0c0c0;
+
+  .mat-paginator-page-size {
+    font-size: 14px;
+  }
+
+  .mat-paginator-range-label {
+    font-size: 13px;
+  }
+}
