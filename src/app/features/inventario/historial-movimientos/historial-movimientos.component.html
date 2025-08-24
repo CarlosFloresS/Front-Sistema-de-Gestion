@@ -1,0 +1,77 @@
+<app-navbar></app-navbar>
+
+<div class="historial-container">
+  <header class="page-header">
+    <button mat-icon-button (click)="goBack()" matTooltip="Volver a la lista">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div *ngIf="producto">
+      <h1>Historial de Inventario</h1>
+      <h2 class="product-name">{{ producto.nombre }}</h2>
+      <p class="current-stock">Stock Actual: <strong>{{ producto.stock }} unidades</strong></p>
+    </div>
+  </header>
+
+  <div class="loading-shade" *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+    <p>Cargando historial...</p>
+  </div>
+
+  <mat-card class="table-card" [hidden]="isLoading">
+    <mat-card-content>
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+          <!-- Columna Fecha -->
+          <ng-container matColumnDef="fecha">
+            <th mat-header-cell *matHeaderCellDef>Fecha</th>
+            <td mat-cell *matCellDef="let mov">{{ mov.fecha | date:'dd/MM/yy h:mm a' }}</td>
+          </ng-container>
+
+          <!-- Columna Tipo -->
+          <ng-container matColumnDef="tipo">
+            <th mat-header-cell *matHeaderCellDef>Tipo de Movimiento</th>
+            <td mat-cell *matCellDef="let mov">
+              <mat-chip [ngClass]="'chip-' + mov.tipo.toLowerCase()">{{ mov.tipo }}</mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Columna Cantidad -->
+          <ng-container matColumnDef="cantidad">
+            <th mat-header-cell *matHeaderCellDef class="align-right">Cantidad</th>
+            <td mat-cell *matCellDef="let mov" class="align-right quantity-cell"
+                [class.positive]="mov.cantidad > 0"
+                [class.negative]="mov.cantidad < 0">
+              {{ mov.cantidad > 0 ? '+' : '' }}{{ mov.cantidad }}
+            </td>
+          </ng-container>
+
+          <!-- Columna Stock Resultante -->
+          <ng-container matColumnDef="stockResultante">
+            <th mat-header-cell *matHeaderCellDef class="align-right">Stock Resultante</th>
+            <td mat-cell *matCellDef="let mov" class="align-right">{{ mov.stockResultante }}</td>
+          </ng-container>
+
+          <!-- Columna Origen -->
+          <ng-container matColumnDef="origen">
+            <th mat-header-cell *matHeaderCellDef>ID Origen</th>
+            <td mat-cell *matCellDef="let mov">{{ mov.origenId }}</td>
+          </ng-container>
+
+          <!-- Columna Motivo -->
+          <ng-container matColumnDef="motivo">
+            <th mat-header-cell *matHeaderCellDef>Motivo / Nota</th>
+            <td mat-cell *matCellDef="let mov">{{ mov.motivo || 'N/A' }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+      <div class="empty-state" *ngIf="!isLoading && dataSource.data.length === 0">
+        <mat-icon>history_toggle_off</mat-icon>
+        <h2>Sin Movimientos</h2>
+        <p>Este producto aún no tiene movimientos registrados en su historial.</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

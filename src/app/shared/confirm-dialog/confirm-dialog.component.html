@@ -1,0 +1,18 @@
+<!-- Título del diálogo. 'data.title' viene del objeto inyectado en el .ts -->
+<h1 mat-dialog-title>{{ data.title }}</h1>
+
+<!-- Contenido principal del diálogo. 'data.message' también viene de los datos inyectados -->
+<div mat-dialog-content>
+  <p>{{ data.message }}</p>
+</div>
+
+<!-- Acciones (botones) del diálogo, alineados al final -->
+<div mat-dialog-actions align="end">
+  <!-- El botón Cancelar llama al método onNoClick() que cierra el diálogo -->
+  <button mat-button (click)="onNoClick()">Cancelar</button>
+
+  <!-- El botón Aceptar usa una directiva especial [mat-dialog-close]="true".
+       Esto cierra el diálogo y devuelve el valor 'true' al componente que lo abrió.
+       cdkFocusInitial hace que este botón tenga el foco por defecto. -->
+  <button mat-flat-button color="warn" [mat-dialog-close]="true" cdkFocusInitial>Aceptar</button>
+</div>

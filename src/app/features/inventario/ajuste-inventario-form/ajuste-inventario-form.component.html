@@ -1,0 +1,47 @@
+<app-navbar></app-navbar>
+
+<div class="ajuste-container">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>rule</mat-icon>
+      <mat-card-title>Ajuste Manual de Inventario</mat-card-title>
+      <mat-card-subtitle>Use esta herramienta con precaución para corregir el stock.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Producto a Ajustar</mat-label>
+          <mat-select formControlName="productoId">
+            <mat-option *ngFor="let p of products$ | async" [value]="p.id">
+              {{ p.nombre }} (Stock actual: {{ p.stock }})
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('productoId')?.hasError('required')">Debe seleccionar un producto.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Cantidad del Ajuste</mat-label>
+          <input matInput type="number" formControlName="cantidadAjuste">
+          <mat-hint>Use un número positivo para añadir stock (ej: 5) o negativo para quitar (ej: -3).</mat-hint>
+          <mat-error *ngIf="form.get('cantidadAjuste')?.hasError('required')">La cantidad es obligatoria.</mat-error>
+          <mat-error *ngIf="form.get('cantidadAjuste')?.hasError('zero')">La cantidad no puede ser cero.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Motivo del Ajuste</mat-label>
+          <textarea matInput formControlName="motivo" placeholder="Ej: Corrección por conteo físico anual"></textarea>
+          <mat-error *ngIf="form.get('motivo')?.hasError('required')">El motivo es obligatorio.</mat-error>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button mat-stroked-button type="button" (click)="cancel()">Cancelar</button>
+          <button mat-flat-button color="warn" type="submit" [disabled]="form.invalid || isLoading">
+            <span *ngIf="!isLoading">Registrar Ajuste</span>
+            <mat-spinner *ngIf="isLoading" diameter="24"></mat-spinner>
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

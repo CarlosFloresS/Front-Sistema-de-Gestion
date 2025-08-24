@@ -1,0 +1,153 @@
+/* ======================================================= */
+/* --- 1. ESTILOS GLOBALES Y LAYOUT DE PÁGINA --- */
+/* ======================================================= */
+:host {
+  /* Ya no definimos colores aquí, solo estilos estructurales. */
+  display: block;
+  background-color: var(--background-color); /* Usa variable global */
+}
+.production-container {
+  padding: 0 32px 32px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.page-header {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.page-header h1 {
+  margin: 0; font-size: 2rem; font-weight: 600;
+  color: var(--text-primary); /* Usa variable global */
+}
+.sticky-header {
+  position: sticky; top: 64px; z-index: 100;
+  background-color: var(--background-color); /* Usa variable global */
+  padding-top: 32px; padding-bottom: 24px;
+}
+
+/* ============================================================== */
+/* --- 2. LA BARRA DE BÚSQUEDA PERSONALIZADA --- */
+/* ============================================================== */
+.custom-search-wrapper {
+  position: relative; display: flex; align-items: center;
+  background-color: var(--card-background); /* Usa variable global */
+  border-radius: 30px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  border: 1px solid var(--border-color); /* Usa variable global */
+  margin-top: 24px;
+  transition: all 0.3s ease;
+}
+.custom-search-wrapper:focus-within {
+  border-color: var(--accent-blue); /* Usa variable de acento global */
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+.search-icon {
+  margin: 0 8px 0 20px;
+  color: var(--text-secondary); /* Usa variable global */
+  transition: color 0.3s ease;
+}
+.custom-search-wrapper:focus-within .search-icon {
+  color: var(--accent-blue); /* Usa variable de acento global */
+}
+.search-input {
+  width: 100%; border: none; outline: none; padding: 16px 20px 16px 0;
+  font-size: 1rem; background-color: transparent;
+  color: var(--text-primary); /* Usa variable global */
+}
+.search-input::placeholder {
+  color: #94a3b8;
+}
+
+/* ======================================================= */
+/* --- 3. DISEÑO DE TARJETAS PARA PRODUCCIÓN --- */
+/* ======================================================= */
+.content-wrapper { display: flex; flex-direction: column; }
+.card-list-container {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px; padding-top: 8px;
+}
+.production-card {
+  background-color: var(--card-background); /* Usa variable global */
+  border-radius: 12px;
+  border: 1px solid var(--border-color); /* Usa variable global */
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  transition: all 0.2s ease-in-out; display: flex; flex-direction: column;
+}
+.production-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+}
+.card-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.product-name {
+  font-size: 1.125rem; font-weight: 600;
+  color: var(--text-primary); /* Usa variable global */
+  margin: 0;
+}
+.card-body {
+  padding: 20px 24px; display: flex; flex-direction: column; gap: 16px;
+}
+.info-item {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--text-secondary); /* Usa variable global */
+  font-size: 0.9rem;
+}
+.info-item mat-icon {
+  font-size: 20px; height: 20px; width: 20px;
+  color: #94a3b8;
+}
+
+/* ======================================================= */
+/* --- 4. PAGINADOR Y ESTADOS --- */
+/* ======================================================= */
+mat-paginator {
+  background-color: #f7fafc; /* Color estático, se ajustará en modo oscuro */
+  border-radius: 12px;
+  border: 1px solid var(--border-color); /* Usa variable global */
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  margin-top: 24px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.loading-shade, .empty-state-container { padding: 80px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; }
+.loading-shade { color: var(--text-secondary); }
+.loading-shade p { margin-top: 16px; font-weight: 500; }
+.empty-state { text-align: center; }
+.empty-state mat-icon { font-size: 72px; width: 72px; height: 72px; margin-bottom: 16px; color: #cbd5e0; }
+.empty-state h2 { margin: 0 0 8px 0; color: var(--text-primary); font-size: 1.5rem; }
+.empty-state p { color: var(--text-secondary); }
+
+/* ======================================================= */
+/* --- 5. ESTILOS PARA NOTIFICACIONES --- */
+/* ======================================================= */
+:host ::ng-deep .snackbar-success {
+  --mdc-snackbar-container-color: var(--accent-green);
+  --mat-mdc-snack-bar-button-color: #ffffff;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+:host ::ng-deep .snackbar-error {
+  --mdc-snackbar-container-color: var(--accent-red);
+  --mat-mdc-snack-bar-button-color: #ffffff;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+/* ======================================================= */
+/* --- 6. ESTILOS ADICIONALES PARA MODO OSCURO --- */
+/* ======================================================= */
+body.dark-mode .production-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -4px rgba(0,0,0,0.3);
+}
+body.dark-mode .card-header {
+  border-bottom-color: var(--border-color);
+}
+body.dark-mode .search-input::placeholder,
+body.dark-mode .info-item mat-icon {
+  color: var(--text-secondary);
+}
+body.dark-mode mat-paginator {
+  background-color: var(--card-background); /* Reutiliza el color de tarjeta del modo oscuro */
+}
+body.dark-mode .empty-state mat-icon {
+  color: var(--border-color);
+}

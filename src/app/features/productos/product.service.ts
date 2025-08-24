@@ -1,37 +1,45 @@
-// src/app/productos/product.service.ts
-import { Injectable } from '@angular/core';
+// src/app/features/productos/product.service.ts
+
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Producto }   from '../../core/models';
+// CAMBIO: Importamos los nuevos modelos, no el antiguo 'Producto'
+import { ProductoRequest, ProductoResponse } from '@core/models/producto.model';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class ProductService {
-  private baseUrl = 'http://localhost:8080/api/productos';
+  private http = inject(HttpClient);
+  private apiUrl = '/api/productos';
 
-  constructor(private http: HttpClient) {}
-
-  /** Listar todos los productos */
-  list(): Observable<Producto[]> {
-    return this.http.get<Producto[]>(this.baseUrl);
+  listarActivos(): Observable<ProductoResponse[]> {
+    return this.http.get<ProductoResponse[]>(this.apiUrl);
   }
 
-  /** Obtener un producto por su ID */
-  getById(id: number): Observable<Producto> {
-    return this.http.get<Producto>(`${this.baseUrl}/${id}`);
+  listarTodos(): Observable<ProductoResponse[]> {
+    return this.http.get<ProductoResponse[]>(`${this.apiUrl}/todos`);
   }
 
-  /** Crear un nuevo producto */
-  create(p: Producto): Observable<Producto> {
-    return this.http.post<Producto>(this.baseUrl, p);
+  getById(id: number): Observable<ProductoResponse> {
+    return this.http.get<ProductoResponse>(`${this.apiUrl}/${id}`);
   }
 
-  /** Actualizar un producto existente */
-  update(id: number, p: Producto): Observable<Producto> {
-    return this.http.put<Producto>(`${this.baseUrl}/${id}`, p);
+  registrar(producto: ProductoRequest): Observable<ProductoResponse> {
+    return this.http.post<ProductoResponse>(this.apiUrl, producto);
   }
 
-  /** Eliminar un producto */
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  actualizar(id: number, producto: ProductoRequest): Observable<ProductoResponse> {
+    return this.http.put<ProductoResponse>(`${this.apiUrl}/${id}`, producto);
+  }
+
+  // CAMBIO: Añadido el método 'desactivar'
+  desactivar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  // CAMBIO: Añadido el método 'activar'
+  activar(id: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${id}/activar`, null);
   }
 }

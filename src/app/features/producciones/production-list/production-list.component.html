@@ -1,1 +1,80 @@
-<p>production-list works!</p>
+<app-navbar></app-navbar>
+
+<div class="production-container">
+  <div class="sticky-header">
+    <header class="page-header">
+      <h1>Gestión de Producción</h1>
+      <button mat-flat-button color="primary" (click)="onNew()">
+        <mat-icon>add</mat-icon>
+        Nueva Producción
+      </button>
+    </header>
+
+    <div class="custom-search-wrapper">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Buscar por nombre de producto..."
+        (keyup)="applyFilter($event)"
+        #input>
+    </div>
+  </div>
+
+  <div class="loading-shade" *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+    <p>Cargando producciones...</p>
+  </div>
+
+  <div class="content-wrapper" [hidden]="isLoading">
+    <div class="card-list-container">
+      <!-- CAMBIO: Ahora la variable se llama 'produccion' para más claridad -->
+      <!-- 'dataSource.connect()' reemplaza al async pipe para una mejor integración con el paginador -->
+      <div *ngFor="let produccion of dataSource.connect() | async" class="production-card">
+        <header class="card-header">
+          <!-- CAMBIO: Usamos 'productoNombre' del nuevo modelo ProduccionResponse -->
+          <h2 class="product-name">{{ produccion.productoNombre }}</h2>
+
+          <!-- CAMBIO: El botón de editar se elimina porque los registros son inmutables.
+               En su lugar, podríamos poner un botón para ver detalles si fuera necesario.
+          -->
+        </header>
+
+        <div class="card-body">
+          <div class="info-item">
+            <mat-icon>calendar_today</mat-icon>
+            <!-- CAMBIO: La propiedad 'fecha' ahora existe y es correcta -->
+            <span>{{ produccion.fecha | date:'dd/MM/yyyy h:mm a' }}</span>
+          </div>
+          <div class="info-item">
+            <mat-icon>inventory_2</mat-icon>
+            <!-- CAMBIO: La propiedad 'cantidad' ahora existe y es correcta -->
+            <span>Producido: <strong>{{ produccion.cantidad }} unidades</strong></span>
+          </div>
+          <!-- MEJORA: Añadimos la información de costos, que ahora está disponible -->
+          <div class="info-item">
+            <mat-icon>monetization_on</mat-icon>
+            <span>Costo total: <strong>{{ produccion.costoTotalProduccion | currency:'S/ ' }}</strong></span>
+          </div>
+          <div class="info-item secondary-info">
+            <mat-icon>sell</mat-icon>
+            <span>Costo unitario: <strong>{{ produccion.costoUnitarioAlProducir | currency:'S/ ' }}</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[6, 12, 18]" showFirstLastButtons
+                   aria-label="Selecciona la página de producciones">
+    </mat-paginator>
+  </div>
+
+  <div class="empty-state-container" *ngIf="!isLoading && dataSource.data.length === 0">
+      <div class="empty-state">
+        <mat-icon>precision_manufacturing</mat-icon>
+        <h2>No hay producciones registradas</h2>
+        <p>Inicia un nuevo proceso para que aparezca aquí.</p>
+        <button mat-stroked-button color="primary" (click)="onNew()">Iniciar primera producción</button>
+      </div>
+  </div>
+</div>

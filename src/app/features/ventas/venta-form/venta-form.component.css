@@ -1,82 +1,298 @@
-mat-card {
-  max-width: 720px;
-  margin: 60px auto;
-  padding: 40px;
-  background: linear-gradient(135deg, #1e1f2f, #2b2c3f);
-  border-radius: 20px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-  color: #f0f0f0;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* ======================================================= */
+/* --- 1. PALETA DE COLORES Y VARIABLES GLOBALES --- */
+/* ======================================================= */
+:host {
+  /* --- MODO CLARO (Default) --- */
+  --brand-color: #2563eb; /* Azul Vibrante */
+  --brand-color-hover: #1d4ed8;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+
+  --bg-page: #f1f5f9; /* Gris muy claro, no blanco */
+  --bg-card: #ffffff;
+  --bg-subtle: #f8fafc; /* Fondo para cabeceras de tabla, etc. */
+  --bg-interactive: #e2e8f0; /* Fondo para inputs */
+  --bg-interactive-hover: #cbd5e1;
+
+  --text-primary: #0f172a; /* Negro azulado, no negro puro */
+  --text-secondary: #64748b;
+  --text-placeholder: #94a3b8;
+  --text-on-brand: #ffffff;
+
+  --border-default: #e2e8f0;
+  --border-interactive: #cbd5e1;
+  --border-focus: var(--brand-color);
+
+  --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-card-hover: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* --- Transiciones --- */
+  --transition-speed: 0.2s;
 }
 
-h2 {
-  text-align: center;
-  font-size: 26px;
-  font-weight: 700;
-  color: #00e1ff;
-  margin-bottom: 36px;
-  letter-spacing: 0.5px;
+/* ======================================================= */
+/* --- 2. ESTILOS DE PÁGINA Y LAYOUT --- */
+/* ======================================================= */
+:host {
+  display: block;
+  min-height: calc(100vh - 64px); /* Asumiendo una navbar de 64px */
+  background-color: var(--bg-page);
+  transition: background-color var(--transition-speed) ease-in-out;
 }
 
-/* Campos */
-mat-form-field {
-  width: 100%;
-  margin-bottom: 28px;
-}
-
-.mat-form-field-appearance-outline .mat-form-field-outline {
-  color: rgba(255, 255, 255, 0.1);
-}
-
-.mat-form-field-flex {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-}
-
-.mat-form-field-label {
-  color: #c0c0c0 !important;
-}
-
-.mat-input-element,
-.mat-select-value-text {
-  color: #ffffff;
-  font-weight: 500;
-}
-
-textarea[matInput] {
-  color: #ffffff;
-}
-
-/* Botones */
-.flex {
+.form-page-container {
   display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 48px 24px;
 }
 
-.justify-end {
-  justify-content: flex-end;
+/* ======================================================= */
+/* --- 3. TARJETA PRINCIPAL "TERMINAL POS" --- */
+/* ======================================================= */
+.sale-card {
+  width: 100%;
+  max-width: 900px;
+  background-color: var(--bg-card);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-default);
+  overflow: hidden;
+  transition: all var(--transition-speed) ease-in-out;
 }
 
-.gap-4 {
+.card-header {
+  padding: 24px 32px;
+  border-bottom: 1px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.card-header .mat-icon {
+  color: var(--brand-color);
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.card-header mat-card-title {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ======================================================= */
+/* --- 4. ÁREA DE ENTRADA DE ÍTEMS --- */
+/* ======================================================= */
+.item-entry-form {
+  display: flex;
+  align-items: flex-start;
   gap: 16px;
-  margin-top: 32px;
+  padding: 32px;
 }
 
-button[type="submit"] {
-  padding: 10px 24px;
-  font-weight: 700;
-  background: #00e1ff;
-  color: #1c1c2c;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
+.product-field { flex-grow: 1; }
+.quantity-field { width: 120px; flex-shrink: 0; }
+
+.add-item-btn {
+  background-color: var(--text-primary);
+  color: var(--bg-card);
+  min-height: 56px;
+  transition: background-color var(--transition-speed) ease-in-out;
 }
 
-button[type="submit"]:hover {
-  background-color: #00c0d4;
+.add-item-btn:hover:not([disabled]) {
+  background-color: #334155;
 }
 
-button[type="button"] {
-  color: #ccc;
-  font-weight: 500;
+/* ======================================================= */
+/* --- 5. TABLA DE RESUMEN DE VENTA --- */
+/* ======================================================= */
+.sale-summary { padding: 0 32px; }
+.table-container {
+  border: 1px solid var(--border-default);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-bottom: 32px;
 }
 
+.mat-table { background-color: transparent; }
+.mat-header-cell {
+  background-color: var(--bg-subtle);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.mat-cell, .mat-header-cell { padding: 12px 16px; }
+.mat-cell {
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.mat-row:last-of-type .mat-cell { border-bottom: none; }
+.align-right { text-align: right; }
+.align-center { text-align: center; }
+.remove-item-btn { color: var(--text-secondary); }
+
+.total-summary {
+  text-align: right;
+  padding: 24px 0;
+  margin-top: -16px;
+  border-top: 1px solid var(--border-default);
+}
+.total-summary h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.total-summary h3 span {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  margin-left: 1rem;
+}
+
+/* ======================================================= */
+/* --- 6. ACCIONES FINALES --- */
+/* ======================================================= */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 24px 32px;
+  background-color: var(--bg-subtle);
+  border-top: 1px solid var(--border-default);
+}
+
+.main-action-btn {
+  background-color: var(--brand-color);
+  color: var(--text-on-brand);
+  font-weight: 600;
+  min-width: 160px;
+  min-height: 44px;
+  border-radius: 0.5rem;
+  transition: all var(--transition-speed) ease-in-out;
+}
+
+.main-action-btn:hover:not([disabled]) {
+  background-color: var(--brand-color-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.main-action-btn mat-spinner { margin: 0 auto; }
+
+/* ======================================================= */
+/* --- 7. AJUSTES PARA ANGULAR MATERIAL (MODO CLARO) --- */
+/* ======================================================= */
+:host ::ng-deep .mat-mdc-form-field .mdc-text-field--filled {
+  background-color: var(--bg-interactive) !important;
+}
+:host ::ng-deep .mat-mdc-form-field .mdc-line-ripple::after {
+  border-bottom-color: var(--border-focus) !important;
+}
+:host ::ng-deep .mat-mdc-form-field .mat-mdc-floating-label,
+:host ::ng-deep .mat-mdc-form-field .mdc-floating-label--float-above {
+  color: var(--brand-color) !important;
+}
+:host ::ng-deep .mat-mdc-input-element,
+:host ::ng-deep .mat-mdc-select-value {
+  color: var(--text-primary) !important;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: var(--text-placeholder) !important;
+  opacity: 1; /* Firefox */
+}
+:host ::ng-deep .mat-mdc-select-arrow {
+  color: var(--text-secondary) !important;
+}
+
+/* Panel de Autocompletado */
+:host ::ng-deep .mat-mdc-autocomplete-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-card);
+  border-radius: 0.75rem;
+}
+:host ::ng-deep .mat-mdc-option { color: var(--text-primary); }
+:host ::ng-deep .mat-mdc-option:hover:not(.mdc-list-item--disabled),
+:host ::ng-deep .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+  background: rgba(37, 99, 235, 0.1) !important;
+}
+.option-layout { display: flex; justify-content: space-between; width: 100%; }
+.option-stock { color: var(--text-secondary); font-size: 0.9em; }
+
+/* ======================================================= */
+/* --- 8. MODO OSCURO --- */
+/* ======================================================= */
+
+body.dark-mode :host {
+  /* --- Redefinimos las variables para el modo oscuro --- */
+  --brand-color: #38bdf8; /* Azul claro */
+  --brand-color-hover: #0ea5e9;
+
+  --bg-page: #020617; /* Negro azulado muy oscuro */
+  --bg-card: #0f172a; /* Azul oscuro */
+  --bg-subtle: #1e293b;
+  --bg-interactive: #1e293b;
+  --bg-interactive-hover: #334155;
+
+  --text-primary: #f1f5f9; /* Gris muy claro */
+  --text-secondary: #94a3b8;
+  --text-placeholder: #64748b;
+
+  --border-default: #334155;
+  --border-interactive: #475569;
+  --border-focus: var(--brand-color);
+
+  --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-card-hover: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+}
+
+/* Botones específicos de modo oscuro */
+body.dark-mode .add-item-btn {
+  background-color: var(--bg-subtle);
+  color: var(--text-primary);
+}
+body.dark-mode .add-item-btn:hover:not([disabled]) {
+  background-color: var(--bg-interactive-hover);
+}
+body.dark-mode .main-action-btn:hover:not([disabled]) {
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+}
+
+/* ======================================================= */
+/* --- 9. AJUSTES GLOBALES Y SNACKBARS --- */
+/* ======================================================= */
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .form-page-container { padding: 24px 16px; }
+  .item-entry-form { flex-direction: column; align-items: stretch; padding: 24px; }
+  .quantity-field { width: 100%; }
+  .sale-summary { padding: 0 24px; }
+  .form-actions { flex-direction: column-reverse; align-items: stretch; }
+}
+
+/* Notificaciones (Snackbars) - Estilo unificado */
+:host ::ng-deep .mat-mdc-snack-bar-container {
+  border-radius: 0.5rem !important;
+  box-shadow: var(--shadow-card-hover) !important;
+}
+:host ::ng-deep .snackbar-success .mdc-snackbar__surface {
+  background-color: var(--success-color) !important;
+  color: #fff !important;
+}
+:host ::ng-deep .snackbar-error .mdc-snackbar__surface {
+  background-color: var(--danger-color) !important;
+  color: #fff !important;
+}
+:host ::ng-deep .mat-mdc-snack-bar-container .mat-mdc-button.mat-mdc-snack-bar-action {
+  color: #fff !important;
+}

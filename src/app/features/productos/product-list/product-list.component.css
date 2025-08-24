@@ -1,0 +1,225 @@
+/* ======================================================= */
+/* --- 1. PALETA DE COLORES Y VARIABLES GLOBALES --- */
+/* ======================================================= */
+:host {
+  /* --- MODO CLARO (Default) --- */
+  --brand-color: #2563eb; /* Azul para acentos */
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+
+  --bg-page: #f1f5f9; /* Fondo de página gris claro */
+  --bg-card: #ffffff;
+  --bg-interactive: #f8fafc; /* Fondo para paginador, cabeceras */
+
+  --text-primary: #0f172a; /* Texto principal casi negro */
+  --text-secondary: #64748b; /* Texto secundario gris */
+  --text-placeholder: #94a3b8; /* Placeholder más claro */
+
+  --border-default: #e2e8f0; /* Borde principal */
+  --border-focus: var(--brand-color);
+}
+
+/* ======================================================= */
+/* --- 2. ESTILOS GLOBALES Y LAYOUT DE PÁGINA --- */
+/* (Estructura original, solo se aplican variables) */
+/* ======================================================= */
+:host {
+  display: block;
+  background-color: var(--bg-page);
+}
+.product-container {
+  padding: 0 32px 32px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.page-header {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.page-header h1 {
+  margin: 0; font-size: 2rem; font-weight: 600;
+  color: var(--text-primary);
+}
+.sticky-header {
+  position: sticky; top: 64px; z-index: 100;
+  background-color: var(--bg-page);
+  padding-top: 32px; padding-bottom: 24px;
+}
+
+/* ============================================================== */
+/* --- 3. BARRA DE BÚSQUEDA PERSONALIZADA --- */
+/* (Estructura original, solo se aplican variables) */
+/* ============================================================== */
+.custom-search-wrapper {
+  position: relative; display: flex; align-items: center;
+  background-color: var(--bg-card);
+  border-radius: 30px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  border: 1px solid var(--border-default);
+  margin-top: 24px;
+  transition: all 0.3s ease;
+}
+.custom-search-wrapper:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+.search-icon {
+  margin: 0 8px 0 20px;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+.custom-search-wrapper:focus-within .search-icon {
+  color: var(--border-focus);
+}
+.search-input {
+  width: 100%; border: none; outline: none; padding: 16px 20px 16px 0;
+  font-size: 1rem; background-color: transparent;
+  color: var(--text-primary);
+}
+.search-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+/* ======================================================= */
+/* --- 4. DISEÑO DE TARJETAS PARA PRODUCTOS --- */
+/* (Estructura original, solo se aplican variables) */
+/* ======================================================= */
+.content-wrapper { display: flex; flex-direction: column; }
+.card-list-container {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px; padding-top: 8px;
+}
+.product-card {
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border-default);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  transition: all 0.2s ease-in-out; display: flex; flex-direction: column;
+}
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+}
+.card-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 12px 12px 24px;
+  border-bottom: 1px solid var(--border-default);
+}
+.product-name {
+  font-size: 1.125rem; font-weight: 600;
+  color: var(--text-primary);
+  margin: 0; flex-grow: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.card-actions {
+  display: flex;
+  flex-shrink: 0;
+}
+.card-body {
+  padding: 20px 24px; display: flex; flex-direction: column; gap: 16px;
+}
+.info-item {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.info-item mat-icon {
+  font-size: 20px; height: 20px; width: 20px;
+  color: var(--text-secondary); /* Ícono ahora usa color secundario */
+}
+.info-item strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ======================================================= */
+/* --- 5. PAGINADOR Y ESTADOS --- */
+/* (Estructura original, solo se aplican variables) */
+/* ======================================================= */
+mat-paginator {
+  background-color: var(--bg-interactive); /* Fondo consistente */
+  border-radius: 12px;
+  border: 1px solid var(--border-default);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  margin-top: 24px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.loading-shade, .empty-state-container { padding: 80px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; }
+.loading-shade { color: var(--text-secondary); }
+.loading-shade p { margin-top: 16px; font-weight: 500; }
+.empty-state { text-align: center; }
+.empty-state mat-icon { font-size: 72px; width: 72px; height: 72px; margin-bottom: 16px; color: var(--border-default); } /* Ícono más sutil */
+.empty-state h2 { margin: 0 0 8px 0; color: var(--text-primary); font-size: 1.5rem; }
+.empty-state p { color: var(--text-secondary); }
+
+/* ======================================================= */
+/* --- 6. MODO OSCURO --- */
+/* ======================================================= */
+
+body.dark-mode :host {
+  /* --- Redefinimos TODAS las variables para el modo oscuro --- */
+  --bg-page: #020617;
+  --bg-card: #0f172a;
+  --bg-interactive: #1e293b;
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-placeholder: #64748b;
+
+  --border-default: #334155;
+  --border-focus: #38bdf8; /* Azul claro para foco en modo oscuro */
+}
+
+/* Ajustes adicionales que dependen de las nuevas variables */
+body.dark-mode .product-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -4px rgba(0,0,0,0.3);
+  border-color: #475569; /* Borde al hacer hover en modo oscuro */
+}
+body.dark-mode .custom-search-wrapper:focus-within {
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+/* No es necesario redefinir .card-header, .search-input::placeholder, etc.
+   porque ya usan variables que hemos cambiado arriba. */
+
+/* ======================================================= */
+/* --- 7. NOTIFICACIONES (SNACKBARS) --- */
+/* (Estilo unificado y mejorado) */
+/* ======================================================= */
+:host ::ng-deep .mat-mdc-snack-bar-container {
+  border-radius: 0.5rem !important;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+}
+:host ::ng-deep .snackbar-success .mdc-snackbar__surface {
+  background-color: var(--success-color) !important;
+  color: #fff !important;
+}
+:host ::ng-deep .snackbar-error .mdc-snackbar__surface {
+  background-color: var(--danger-color) !important;
+  color: #fff !important;
+}
+:host ::ng-deep .mat-mdc-snack-bar-container .mat-mdc-button.mat-mdc-snack-bar-action {
+  color: #fff !important;
+}
+
+body.dark-mode :host ::ng-deep .mat-mdc-snack-bar-container {
+  background-color: var(--bg-interactive) !important;
+  border: 1px solid var(--border-default) !important;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3) !important;
+}
+body.dark-mode :host ::ng-deep .snackbar-success .mdc-snackbar__surface,
+body.dark-mode :host ::ng-deep .snackbar-error .mdc-snackbar__surface {
+  /* En modo oscuro, usamos el color solo como un acento */
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+}
+body.dark-mode :host ::ng-deep .mat-mdc-snack-bar-container {
+  border-left-width: 4px;
+}
+body.dark-mode :host ::ng-deep .snackbar-success {
+  border-left-color: var(--success-color);
+}
+body.dark-mode :host ::ng-deep .snackbar-error {
+  border-left-color: var(--danger-color);
+}
+body.dark-mode :host ::ng-deep .mat-mdc-snack-bar-container .mat-mdc-button.mat-mdc-snack-bar-action {
+  color: var(--brand-color) !important; /* Botón de acción con color de marca */
+}

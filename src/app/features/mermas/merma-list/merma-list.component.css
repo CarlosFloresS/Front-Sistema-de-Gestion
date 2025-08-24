@@ -1,0 +1,169 @@
+/* ======================================================= */
+/* --- 1. ESTILOS GLOBALES Y LAYOUT DE PÁGINA --- */
+/* ======================================================= */
+:host {
+  /* Ya no definimos colores aquí, solo estilos estructurales. */
+  display: block;
+  background-color: var(--background-color); /* Usa variable global */
+}
+.merma-container {
+  padding: 0 32px 32px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.page-header {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.page-header h1 {
+  margin: 0; font-size: 2rem; font-weight: 600;
+  color: var(--text-primary); /* Usa variable global */
+}
+.sticky-header {
+  position: sticky; top: 64px; z-index: 100;
+  background-color: var(--background-color); /* Usa variable global */
+  padding-top: 32px; padding-bottom: 24px;
+}
+
+/* ============================================================== */
+/* --- 2. BARRA DE BÚSQUEDA (Consistente) --- */
+/* ============================================================== */
+.custom-search-wrapper {
+  position: relative; display: flex; align-items: center;
+  background-color: var(--card-background); /* Usa variable global */
+  border-radius: 30px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  border: 1px solid var(--border-color); /* Usa variable global */
+  margin-top: 24px;
+  transition: all 0.3s ease;
+}
+.custom-search-wrapper:focus-within {
+  border-color: var(--accent-red); /* Usamos el acento rojo para mermas */
+  box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.2);
+}
+.search-icon {
+  margin: 0 8px 0 20px;
+  color: var(--text-secondary); /* Usa variable global */
+  transition: color 0.3s ease;
+}
+.custom-search-wrapper:focus-within .search-icon {
+  color: var(--accent-red); /* Usamos el acento rojo para mermas */
+}
+.search-input {
+  width: 100%; border: none; outline: none; padding: 16px 20px 16px 0;
+  font-size: 1rem; background-color: transparent;
+  color: var(--text-primary); /* Usa variable global */
+}
+.search-input::placeholder {
+  color: #94a3b8;
+}
+
+/* ======================================================= */
+/* --- 3. DISEÑO DE TARJETAS DE MERMA "TÉTRICO" --- */
+/* ======================================================= */
+.content-wrapper { display: flex; flex-direction: column; }
+.card-list-container {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px; padding-top: 8px;
+}
+.merma-card {
+  background-color: var(--card-background); /* Usa variable global */
+  border-radius: 12px;
+  border: 1px solid var(--border-color); /* Usa variable global */
+  border-left: 5px solid var(--accent-red); /* Usa variable de acento global */
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  transition: all 0.2s ease-in-out;
+  display: flex; flex-direction: column;
+}
+.merma-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(197, 48, 48, 0.1), 0 4px 6px -4px rgba(197, 48, 48, 0.1);
+  border-color: #fee2e2;
+}
+.card-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.loss-info {
+  display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px;
+}
+.loss-icon {
+  color: var(--accent-red); /* Usa variable de acento global */
+  font-size: 28px; height: 28px; width: 28px;
+}
+.loss-amount {
+  font-size: 2.5rem; font-weight: 700;
+  color: var(--accent-red); /* Usa variable de acento global */
+  line-height: 1;
+}
+.loss-unit {
+  font-size: 1rem; font-weight: 500;
+  color: var(--text-secondary); /* Usa variable global */
+  padding-bottom: 4px;
+}
+.product-name {
+  font-size: 1.125rem; font-weight: 600;
+  color: var(--text-primary); /* Usa variable global */
+  margin: 0;
+}
+.loss-reason {
+  font-size: 0.9rem;
+  color: var(--text-secondary); /* Usa variable global */
+  margin: 8px 0 0 0;
+  font-style: italic;
+  flex-grow: 1;
+}
+.card-footer {
+  background-color: #f7fafc;
+  padding: 12px 24px;
+  border-top: 1px solid #f1f5f9;
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--text-secondary); /* Usa variable global */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ======================================================= */
+/* --- 4. PAGINADOR Y ESTADOS --- */
+/* ======================================================= */
+mat-paginator {
+  background-color: #f7fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  margin-top: 24px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.loading-shade, .empty-state-container { padding: 80px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; }
+.loading-shade { color: var(--text-secondary); }
+.loading-shade p { margin-top: 16px; font-weight: 500; }
+.empty-state { text-align: center; }
+.empty-state .skull-icon {
+  font-size: 72px; width: 72px; height: 72px; margin-bottom: 16px;
+  color: var(--text-secondary); /* Usa variable global */
+}
+.empty-state h2 { margin: 0 0 8px 0; color: var(--text-primary); font-size: 1.5rem; }
+.empty-state p { color: var(--text-secondary); }
+
+/* ======================================================= */
+/* --- 5. ESTILOS ADICIONALES PARA MODO OSCURO --- */
+/* ======================================================= */
+body.dark-mode .merma-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(197, 48, 48, 0.2), 0 4px 6px -4px rgba(197, 48, 48, 0.2);
+  border-color: rgba(254, 226, 226, 0.2);
+}
+body.dark-mode .search-input::placeholder {
+  color: var(--text-secondary);
+}
+body.dark-mode .card-footer {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-top-color: var(--border-color);
+}
+body.dark-mode mat-paginator {
+  background-color: var(--card-background);
+  border-color: var(--border-color);
+}
+body.dark-mode .empty-state .skull-icon {
+  color: var(--border-color);
+}

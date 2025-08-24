@@ -1,28 +1,23 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+// ¡VOLVEMOS AL MODELO ORIGINAL!
+import { VentaRequest, VentaResponse } from '@core/models';
 
-export interface CreateVenta {
-  productoId: number;
-  cantidad:   number;
-}
-
-export interface Venta {
-  id?:         number;
-  productoId:  number;
-  fecha:       string;
-  cantidad:    number;
-  total?:      number;
-}
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class VentaService {
-  private baseUrl = 'http://localhost:8080/api/ventas';
-  constructor(private http: HttpClient) {}
-  list(): Observable<Venta[]> {
-    return this.http.get<Venta[]>(this.baseUrl);
+  private http = inject(HttpClient);
+  private apiUrl = '/api/ventas';
+
+  // El método vuelve a aceptar el DTO de un solo producto
+  registrar(venta: VentaRequest): Observable<VentaResponse> {
+    return this.http.post<VentaResponse>(this.apiUrl, venta);
   }
-  create(dto: CreateVenta): Observable<Venta> {
-    return this.http.post<Venta>(this.baseUrl, dto);
+
+  // ... otros métodos ...
+  listar(): Observable<VentaResponse[]> {
+    return this.http.get<VentaResponse[]>(this.apiUrl);
   }
 }

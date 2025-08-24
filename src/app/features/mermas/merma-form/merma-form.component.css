@@ -1,71 +1,182 @@
-.form-container {
-  max-width: 720px;
-  margin: 60px auto;
-  padding: 40px;
-  background: linear-gradient(135deg, #1e1f2f, #2b2c3f);
-  border-radius: 20px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-  color: #f0f0f0;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* ======================================================= */
+/* --- 1. ESTILOS DE PÁGINA Y LAYOUT --- */
+/* ======================================================= */
+:host {
+  /* Ya no definimos colores aquí, solo estilos estructurales. */
+  display: block;
+  background-color: var(--background-color); /* Usa variable global */
+  min-height: calc(100vh - 64px);
 }
 
-h2 {
-  text-align: center;
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: #00e1ff;
-  margin-bottom: 36px;
-}
-
-/* Campos de entrada */
-.full-width {
-  width: 100%;
-  margin-bottom: 28px;
-}
-
-.mat-form-field-appearance-fill .mat-form-field-flex {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-}
-
-.mat-form-field-label {
-  color: #c0c0c0 !important;
-}
-
-.mat-input-element, .mat-select-value-text {
-  color: #fff;
-}
-
-textarea[matInput] {
-  min-height: 90px;
-  resize: vertical;
-  color: #fff;
-}
-
-/* Botones */
-.buttons {
+.form-page-container {
   display: flex;
-  justify-content: flex-end;
-  gap: 16px;
-  margin-top: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
 }
 
-button[type="submit"] {
-  background: #00e1ff;
-  color: #1c1c2c;
+/* ======================================================= */
+/* --- 2. TARJETA DE DISEÑO DE ALERTA --- */
+/* ======================================================= */
+.form-card-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  width: 100%;
+  max-width: 900px;
+  border-radius: 1.5rem;
+  overflow: hidden;
+
+  /* --- Tema Claro (Diseño Oscuro por Contraste) --- */
+  background: #1f2937; /* Gris oscuro */
+  border: 1px solid #374151;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+/* ======================================================= */
+/* --- 3. BARRA LATERAL TEMÁTICA --- */
+/* ======================================================= */
+.form-sidebar {
+  background: #111827; /* Gris casi negro */
+  border-right: 1px solid #374151;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.sidebar-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: var(--accent-red); /* Usa variable de acento global */
+  margin-bottom: 24px;
+}
+
+.sidebar-content h2 {
+  color: #f9fafb; /* Blanco pálido */
+  font-size: 1.75rem;
   font-weight: 700;
-  border-radius: 8px;
-  padding: 10px 24px;
-  transition: background 0.3s ease;
+  margin: 0 0 12px 0;
 }
 
-button[type="submit"]:hover {
-  background: #00c0d4;
+.sidebar-content p {
+  color: #9ca3af; /* Gris claro */
+  line-height: 1.6;
+  margin: 0;
 }
 
-button[type="button"] {
-  color: #ccc;
-  font-weight: 500;
+/* ======================================================= */
+/* --- 4. ÁREA PRINCIPAL DEL FORMULARIO --- */
+/* ======================================================= */
+.form-main {
+  padding: 40px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.form-field {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+/* Estilos para los campos en tema "oscuro por defecto" */
+:host ::ng-deep .mat-mdc-form-field .mdc-notched-outline > * {
+  border-color: #374151 !important;
+}
+:host ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline > * {
+  border-color: #9ca3af !important;
+}
+:host ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline > * {
+  border-color: var(--accent-red) !important;
+  border-width: 2px !important;
+}
+:host ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-floating-label,
+:host ::ng-deep .mat-mdc-select.mat-focused .mat-mdc-floating-label {
+  color: var(--accent-red) !important;
+}
+:host ::ng-deep .mat-mdc-form-field .mat-mdc-floating-label,
+:host ::ng-deep .mat-mdc-select-arrow,
+:host ::ng-deep .mat-mdc-form-field-icon-suffix {
+  color: #9ca3af !important;
+}
+:host ::ng-deep .mat-mdc-input-element,
+:host ::ng-deep .mat-mdc-select-value {
+  color: #f9fafb !important;
+}
+
+/* ======================================================= */
+/* --- 5. BOTONES DE ACCIÓN --- */
+/* ======================================================= */
+.form-actions {
+  display: flex; justify-content: flex-end; gap: 16px; margin-top: 32px;
+  padding-top: 24px; border-top: 1px solid #374151;
+  transition: border-color 0.3s ease;
+}
+button[mat-button] { color: #9ca3af; }
+.main-action-btn {
+  background-color: var(--accent-red); color: white;
+  min-width: 160px; min-height: 44px;
+}
+.main-action-btn:hover:not([disabled]) {
+  background-color: #b91c1c;
+}
+.main-action-btn mat-spinner { margin: 0 auto; }
+
+/* ======================================================= */
+/* --- 6. RESPONSIVIDAD Y NOTIFICACIONES --- */
+/* ======================================================= */
+@media (max-width: 768px) {
+  .form-card-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+  .form-sidebar { border-right: none; border-bottom: 1px solid #374151; }
+  .form-actions { flex-direction: column-reverse; align-items: stretch; }
+}
+:host ::ng-deep .snackbar-success,
+:host ::ng-deep .snackbar-error {
+  --mat-mdc-snack-bar-button-color: #ffffff;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+:host ::ng-deep .snackbar-success { --mdc-snackbar-container-color: var(--accent-green); }
+:host ::ng-deep .snackbar-error { --mdc-snackbar-container-color: var(--accent-red); }
+
+/* ======================================================= */
+/* --- 7. ADAPTACIÓN AL MODO OSCURO GLOBAL --- */
+/* ======================================================= */
+/* Cuando el tema global es oscuro, usamos las variables globales */
+body.dark-mode .form-card-grid {
+  background-color: var(--card-background);
+  border-color: var(--border-color);
+}
+body.dark-mode .form-sidebar {
+  background-color: var(--sidebar-background);
+  border-right-color: var(--border-color);
+}
+body.dark-mode .sidebar-content h2 { color: var(--text-primary); }
+body.dark-mode .sidebar-content p { color: var(--text-secondary); }
+
+body.dark-mode .form-actions {
+  border-top-color: var(--border-color);
+}
+body.dark-mode button[mat-button] { color: var(--text-secondary); }
+
+/* Adaptamos los campos del formulario al tema oscuro global */
+body.dark-mode :host ::ng-deep .mat-mdc-form-field .mdc-notched-outline > *,
+body.dark-mode :host ::ng-deep .mat-mdc-form-field:hover .mdc-notched-outline > * {
+  border-color: var(--border-color) !important;
+}
+body.dark-mode :host ::ng-deep .mat-mdc-form-field .mat-mdc-floating-label,
+body.dark-mode :host ::ng-deep .mat-mdc-select-arrow {
+  color: var(--text-secondary) !important;
+}
+body.dark-mode :host ::ng-deep .mat-mdc-input-element,
+body.dark-mode :host ::ng-deep .mat-mdc-select-value {
+  color: var(--text-primary) !important;
 }

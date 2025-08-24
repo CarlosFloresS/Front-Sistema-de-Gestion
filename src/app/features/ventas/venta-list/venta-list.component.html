@@ -1,1 +1,123 @@
-<p>venta-list works!</p>
+<app-navbar></app-navbar>
+
+<div class="sale-history-container">
+  <header class="page-header">
+    <h1>Historial de Ventas</h1>
+    <button mat-flat-button class="new-sale-btn" (click)="onNew()">
+      <mat-icon>add_shopping_cart</mat-icon>
+      Nueva Venta
+    </button>
+  </header>
+
+  <!-- Controles de Filtrado Interactivo (sin cambios) -->
+  <div class="filter-controls">
+      <!-- ... tu código de filtros está perfecto ... -->
+      <mat-button-toggle-group class="quick-filters" aria-label="Filtros de período">
+          <mat-button-toggle (click)="setFilter('today')">Hoy</mat-button-toggle>
+          <mat-button-toggle (click)="setFilter('month')">Este Mes</mat-button-toggle>
+          <mat-button-toggle (click)="setFilter('year')">Este Año</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-form-field appearance="outline" class="date-range-picker">
+        <mat-label>Seleccionar un rango</mat-label>
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+          <input matStartDate formControlName="start" placeholder="Fecha de inicio">
+          <input matEndDate formControlName="end" placeholder="Fecha de fin">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+        <button *ngIf="range.value.start" mat-icon-button matSuffix (click)="clearFilter()" matTooltip="Limpiar filtro">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+  </div>
+
+  <!-- Dashboard de Estadísticas Globales -->
+  <div class="stats-dashboard">
+    <!-- ========================================================= -->
+    <!-- CAMBIO 1: Añadida tarjeta para INGRESOS TOTALES           -->
+    <!-- ========================================================= -->
+    <div class="stat-card">
+      <div class="stat-icon-wrapper income-icon"> <!-- Puedes darle un estilo propio a 'income-icon' en tu CSS -->
+        <mat-icon>attach_money</mat-icon>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Ingresos Totales (Período)</span>
+        <!-- Usamos el pipe 'currency' para formatear el monto -->
+        <span class="stat-value">{{ ingresosTotales | currency:'S/':'symbol':'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon-wrapper sales-icon">
+        <mat-icon>bar_chart</mat-icon>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Unidades Vendidas (Período)</span>
+        <span class="stat-value">{{ totalUnidadesVendidas }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon-wrapper product-icon">
+        <mat-icon>star</mat-icon>
+      </div>
+      <div class="stat-content">
+        <span class="stat-label">Producto Estrella (Período)</span>
+        <span class="stat-value product-star">{{ productoMasVendido }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading-shade" *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+    <p>Cargando historial...</p>
+  </div>
+
+  <!-- Contenedor del Historial (Línea de Tiempo) -->
+  <div class="timeline-container" [hidden]="isLoading">
+    <ng-container *ngFor="let grupo of ventasAgrupadas; let i = index">
+      <!-- Encabezado del Día -->
+      <div class="day-header">
+        <div class="date-badge">{{ grupo.fechaObj | date:'fullDate' }}</div>
+        <!-- ========================================================= -->
+        <!-- CAMBIO 2: Añadido el TOTAL DE VENTA del día               -->
+        <!-- ========================================================= -->
+        <div class="day-summary">
+          <span class="day-total-sales">{{ grupo.totalVentaDia | currency:'S/':'symbol':'1.2-2' }}</span>
+          <span class="day-units-summary"><strong>{{ grupo.totalUnidades }}</strong> uds. en <strong>{{ grupo.transacciones }}</strong> trans.</span>
+        </div>
+      </div>
+
+      <!-- Lista de Ventas de ese Día -->
+      <div class="sales-list">
+        <div *ngFor="let venta of grupo.ventas" class="sale-item-card">
+          <div class="product-info">
+            <span class="product-name">{{ venta.productoNombre }}</span>
+            <span class="sale-time">{{ venta.fecha | date:'shortTime' }}</span>
+          </div>
+          <div class="quantity-info">
+            <span class="quantity">{{ venta.cantidad }}</span>
+            <span class="unit">uds.</span>
+          </div>
+          <!-- ========================================================= -->
+          <!-- CAMBIO 3: Añadido el SUBTOTAL de cada venta individual    -->
+          <!-- ========================================================= -->
+          <div class="sale-total-info">
+            <span class="sale-total">{{ venta.totalVenta | currency:'S/' }}</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Estado Vacío (sin cambios) -->
+    <div class="empty-state-container" *ngIf="!isLoading && ventasAgrupadas.length === 0">
+        <!-- ... tu código de estado vacío está perfecto ... -->
+        <div class="empty-state">
+            <mat-icon>search_off</mat-icon>
+            <h2>No hay ventas que mostrar</h2>
+            <p>No se encontraron ventas para el período seleccionado. Intenta con otro rango de fechas o limpia el filtro.</p>
+            <button mat-stroked-button *ngIf="range.value.start" (click)="clearFilter()">Limpiar Filtro</button>
+        </div>
+    </div>
+  </div>
+</div>

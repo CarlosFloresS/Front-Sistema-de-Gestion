@@ -1,91 +1,190 @@
-/* Contenedor principal */
-.form-container {
-  background-color: #ffffff;
-  border-radius: 1rem;
-  padding: 2rem;
-  margin: 3rem auto;
-  max-width: 600px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
+/* ======================================================= */
+/* --- 1. ESTILOS DE PÁGINA Y LAYOUT --- */
+/* ======================================================= */
+:host {
+  /* Ya no definimos colores aquí, solo estilos estructurales. */
+  display: block;
+  background-color: var(--background-color); /* Usa variable global */
+  min-height: calc(100vh - 64px);
 }
 
-.form-container:hover {
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+.form-page-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
 }
 
-/* Título */
-.form-container h2 {
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: #1e293b; /* slate-800 */
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-/* Campos del formulario */
-mat-form-field {
+/* ======================================================= */
+/* --- 2. TARJETA DE DISEÑO (GRID LAYOUT) --- */
+/* ======================================================= */
+.form-card-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
   width: 100%;
-  margin-bottom: 1.5rem;
+  max-width: 900px;
+  background: var(--card-background); /* Usa variable global */
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color); /* Usa variable global */
 }
 
-/* Colores de foco y resaltado */
-mat-form-field.mat-form-field {
-  --mdc-filled-text-field-focus-active-indicator-color: #3b82f6;
-  --mdc-filled-text-field-hover-active-indicator-color: #2563eb;
+.form-card-grid:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
-/* Mensajes de error */
-mat-error {
-  font-size: 0.85rem;
-  color: #dc2626; /* rojo */
-  font-weight: 500;
+/* ======================================================= */
+/* --- 3. BARRA LATERAL DESCRIPTIVA --- */
+/* ======================================================= */
+.form-sidebar {
+  background: var(--sidebar-background); /* Usa variable global */
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: background-color 0.3s ease;
 }
 
-/* Botones */
-.form-container button {
-  min-width: 120px;
-  padding: 0.6rem 1.5rem;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  text-transform: none;
+.sidebar-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: var(--accent-blue); /* Usa variable de acento global */
+  margin-bottom: 24px;
+}
+
+.sidebar-content h2 {
+  color: var(--text-primary); /* Usa variable global */
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+}
+
+.sidebar-content p {
+  color: var(--text-secondary); /* Usa variable global */
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ======================================================= */
+/* --- 4. ÁREA PRINCIPAL DEL FORMULARIO --- */
+/* ======================================================= */
+.form-main {
+  padding: 40px;
+}
+
+.form-field {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+/* Personalización del color de foco de los campos */
+:host ::ng-deep .mat-mdc-form-field.mat-focused .mdc-notched-outline > * {
+  border-color: var(--accent-blue) !important; /* Usa variable de acento global */
+  border-width: 2px !important;
+}
+:host ::ng-deep .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+  color: var(--accent-blue) !important; /* Usa variable de acento global */
+}
+
+/* ======================================================= */
+/* --- 5. BOTONES DE ACCIÓN REDISEÑADOS --- */
+/* ======================================================= */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color); /* Usa variable global */
+  transition: border-color 0.3s ease;
 }
 
 button[mat-button] {
-  color: #6b7280;
+  color: var(--text-secondary); /* Usa variable global */
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+button[mat-button]:hover {
+  background-color: rgba(0, 0, 0, 0.04);
 }
 
-button[mat-flat-button] {
-  background-color: #3b82f6;
+.main-action-btn {
+  background-color: var(--accent-blue); /* Usa variable de acento global */
   color: white;
-  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+  font-weight: 600;
+  min-width: 160px;
+  min-height: 44px;
+  padding: 0 24px;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -2px rgba(0,0,0,.1);
+  transition: all 0.2s ease-in-out;
 }
 
-button[mat-flat-button]:hover {
-  background-color: #2563eb;
-  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+.main-action-btn:hover:not([disabled]) {
+  background-color: #4338ca; /* Un tono más oscuro del azul de acento */
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -4px rgba(0,0,0,.1);
 }
 
-/* Botonera */
-.flex.justify-end {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 1rem;
+.main-action-btn mat-spinner {
+  margin: 0 auto;
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-  .form-container {
-    padding: 1.5rem;
-    margin: 1rem;
+/* ======================================================= */
+/* --- 6. RESPONSIVIDAD --- */
+/* ======================================================= */
+@media (max-width: 768px) {
+  .form-card-grid {
+    grid-template-columns: 1fr;
   }
-
-  .flex.justify-end {
-    flex-direction: column;
+  .form-sidebar {
+    text-align: center;
+    align-items: center;
+  }
+  .form-actions {
+    flex-direction: column-reverse;
     align-items: stretch;
   }
+}
 
-  .form-container button {
-    width: 100%;
-  }
+/* ======================================================= */
+/* --- 7. ESTILOS PARA NOTIFICACIONES --- */
+/* ======================================================= */
+:host ::ng-deep .snackbar-success {
+  --mdc-snackbar-container-color: var(--accent-green);
+  --mat-mdc-snack-bar-button-color: #ffffff;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+:host ::ng-deep .snackbar-error {
+  --mdc-snackbar-container-color: var(--accent-red);
+  --mat-mdc-snack-bar-button-color: #ffffff;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+/* ======================================================= */
+/* --- 8. ESTILOS ADICIONALES PARA MODO OSCURO --- */
+/* ======================================================= */
+body.dark-mode .form-card-grid:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+body.dark-mode button[mat-button]:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+body.dark-mode .main-action-btn:hover:not([disabled]) {
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -4px rgba(0,0,0,0.3);
+}
+/* Estilos para los campos en tema oscuro */
+body.dark-mode :host ::ng-deep .mat-mdc-form-field .mat-mdc-floating-label,
+body.dark-mode :host ::ng-deep .mat-mdc-select-arrow,
+body.dark-mode :host ::ng-deep .mat-mdc-form-field-icon-suffix {
+  color: var(--text-secondary) !important;
+}
+body.dark-mode :host ::ng-deep .mat-mdc-input-element,
+body.dark-mode :host ::ng-deep .mat-mdc-select-value {
+  color: var(--text-primary) !important;
 }

@@ -1,103 +1,78 @@
 // src/app/features/producciones/production-form/production-form.component.ts
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule }               from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators
-} from '@angular/forms';
-import {
-  RouterModule,
-  ActivatedRoute,
-  Router
-} from '@angular/router';
 
-import { MatFormFieldModule }  from '@angular/material/form-field';
-import { MatInputModule }      from '@angular/material/input';
+import { Component, OnInit, inject } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { finalize, Observable } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatSelectModule }     from '@angular/material/select';
-import { MatButtonModule }     from '@angular/material/button';
 
-import { NavbarComponent }      from '../../../shared/navbar/navbar.component';
-import { ProductionService, Produccion } from '../production.service';
-import { ProductService }       from '../../productos/product.service';
-import { Producto }             from '../../../core/models';
-import { Observable }           from 'rxjs';
+import { NavbarComponent } from '@shared/navbar/navbar.component';
+import { ProductService } from '../../productos/product.service';
+import { ProduccionService } from '../production.service'; // Asegúrate que el nombre de archivo es 'production.service.ts'
+import { ProductoResponse, ProduccionRequest } from '@core/models';
 
 @Component({
   standalone: true,
   selector: 'app-production-form',
   templateUrl: './production-form.component.html',
-  styleUrls: ['./production-form.component.scss'],
+  styleUrls: ['./production-form.component.css'],
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatSelectModule,
-    MatButtonModule,
-    NavbarComponent
+    CommonModule, ReactiveFormsModule, RouterModule, NavbarComponent,
+    MatFormFieldModule, MatInputModule, MatButtonModule, MatSnackBarModule,
+    MatProgressSpinnerModule, MatIconModule, MatSelectModule, MatDatepickerModule,
+    MatNativeDateModule
   ]
 })
 export class ProductionFormComponent implements OnInit {
   form!: FormGroup;
-  isEdit = false;
-  private id?: number;
-  products$!: Observable<Producto[]>;
+  isLoading = false;
+  products$!: Observable<ProductoResponse[]>;
 
-  private fb      = inject(FormBuilder);
-  private service = inject(ProductionService);
-  private router  = inject(Router);
-  private route   = inject(ActivatedRoute);
+  private fb = inject(FormBuilder);
+  private produccionService = inject(ProduccionService);
   private prodSvc = inject(ProductService);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
 
   ngOnInit(): void {
-    // 1. Cargar productos para el selector
-    this.products$ = this.prodSvc.list();
-
-    // 2. Construir formulario
     this.form = this.fb.group({
-      productoId: [null, Validators.required],
-      fecha:      [new Date(), Validators.required],
-      cantidad:   [0, [Validators.required, Validators.min(1)]]
+      productoId: [null, [Validators.required]],
+      cantidad: [1, [Validators.required, Validators.min(1)]],
     });
-
-    // 3. Si viene :id, cargamos para editar
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.isEdit = true;
-        this.id     = +params['id'];
-        this.service.getById(this.id).subscribe((dto: Produccion) => {
-          this.form.patchValue({
-            productoId: dto.productoId,
-            fecha:      new Date(dto.fecha),
-            cantidad:   dto.cantidad
-          });
-        });
-      }
-    });
+    this.products$ = this.prodSvc.listarActivos();
   }
 
   submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    const raw = this.form.value;
-    const dto: Produccion = {
-      productoId: raw.productoId,
-      fecha:      (raw.fecha as Date).toISOString(),
-      cantidad:   raw.cantidad
-    };
-    const call$ = this.isEdit && this.id
-      ? this.service.update(this.id, dto)
-      : this.service.create(dto);
-    call$.subscribe(() => this.router.navigate(['/producciones']));
+    if (this.form.invalid) return;
+    this.isLoading = true;
+    this.form.disable();
+    const request: ProduccionRequest = this.form.value;
+
+    this.produccionService.registrar(request).pipe(
+      finalize(() => {
+        this.isLoading = false;
+        this.form.enable();
+      })
+    ).subscribe({
+      next: () => {
+        this.snackBar.open('Producción registrada con éxito', 'Cerrar', { duration: 3000 });
+        this.router.navigate(['/producciones']);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.snackBar.open('Error al registrar la producción', 'Cerrar', { duration: 5000 });
+      }
+    });
   }
 
   cancel(): void {

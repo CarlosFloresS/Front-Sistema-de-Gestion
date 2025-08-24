@@ -1,101 +1,222 @@
-mat-card {
-  max-width: 920px;
-  margin: 60px auto;
-  padding: 40px;
-  background: linear-gradient(135deg, #1e1f2f, #2b2c3f);
-  border-radius: 20px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-  color: #f1f1f1;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* ======================================================= */
+/* --- 1. ESTILOS DE PÁGINA "HISTORIAL DE VENTAS" --- */
+/* ======================================================= */
+:host {
+  display: block;
+  background-color: var(--background-color);
+  min-height: calc(100vh - 64px);
 }
+.sale-history-container {
+  padding: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.page-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 24px;
+}
+.page-header h1 { margin: 0; font-size: 2rem; font-weight: 700; color: var(--text-primary); }
+.new-sale-btn { background-color: var(--accent-green) !important; color: white !important; }
 
-.header {
+/* ======================================================= */
+/* --- 2. CONTROLES DE FILTRADO --- */
+/* ======================================================= */
+.filter-controls {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
+  gap: 16px;
+  background-color: var(--card-background);
+  padding: 16px;
+  border-radius: 1rem;
+  border: 1px solid var(--border-color);
   margin-bottom: 32px;
-
-  h2 {
-    font-size: 26px;
-    font-weight: 700;
-    color: #00e1ff;
-    margin: 0;
-  }
-
-  button {
-    font-weight: 600;
-    background-color: #00e1ff;
-    color: #1c1c2c;
-    border-radius: 8px;
-    transition: background 0.3s ease;
-
-    &:hover {
-      background-color: #00c0d4;
-    }
-  }
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.quick-filters {
+  box-shadow: none !important;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.quick-filters .mat-button-toggle {
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+.quick-filters .mat-button-toggle-checked {
+  background-color: var(--accent-green) !important;
+  color: white !important;
+  border-color: var(--accent-green) !important;
+}
+.date-range-picker {
+  flex-grow: 1;
+}
+:host ::ng-deep .date-range-picker .mat-mdc-form-field-flex {
+  background-color: transparent !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+:host ::ng-deep .date-range-picker .mat-mdc-notched-outline > * {
+  border-color: transparent !important;
+}
+:host ::ng-deep .date-range-picker .mat-mdc-input-element,
+:host ::ng-deep .date-range-picker .mat-mdc-select-arrow,
+:host ::ng-deep .date-range-picker .mat-mdc-icon-button .mat-icon {
+  color: var(--text-secondary) !important;
 }
 
-p {
-  margin-bottom: 24px;
-  color: #ccc;
-  font-size: 14px;
+/* ======================================================= */
+/* --- 3. DASHBOARD DE ESTADÍSTICAS --- */
+/* ======================================================= */
+.stats-dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+.stat-card {
+  background-color: var(--card-background); border-radius: 1rem; padding: 24px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  display: flex; align-items: center; gap: 16px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.stat-icon-wrapper {
+  flex-shrink: 0; width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.stat-icon-wrapper mat-icon { color: white; }
+.sales-icon { background-color: var(--accent-green); }
+.product-icon { background-color: #f59e0b; }
+.stat-content { display: flex; flex-direction: column; min-width: 0;}
+.stat-label { font-size: 0.9rem; color: var(--text-secondary); }
+.stat-value { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); }
+.product-star { font-size: 1.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ======================================================= */
+/* --- 4. LÍNEA DE TIEMPO DE VENTAS --- */
+/* ======================================================= */
+.day-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-top: 24px; margin-bottom: 16px; position: relative;
+  border-top: 2px solid var(--border-color); padding-top: 24px;
+}
+.date-badge {
+  background-color: var(--card-background); padding: 4px 12px; border-radius: 16px;
+  border: 1px solid var(--border-color); font-size: 0.8rem;
+  font-weight: 600; color: var(--text-secondary);
+  position: absolute; top: -15px; left: 0;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.day-summary { margin-left: auto; font-size: 0.9rem; color: var(--text-secondary); white-space: nowrap; }
+.day-summary strong { color: var(--text-primary); }
+
+.sales-list { display: flex; flex-direction: column; gap: 12px; }
+.sale-item-card {
+  display: flex; justify-content: space-between; align-items: center;
+  background-color: var(--card-background); border: 1px solid var(--border-color);
+  border-radius: 0.75rem; padding: 16px 24px; transition: all 0.2s ease;
+}
+.sale-item-card:hover { box-shadow: 0 1px 3px rgba(0,0,0,0.05); border-color: #d1d5db; }
+.product-info { display: flex; flex-direction: column; }
+.product-name { font-weight: 600; color: var(--text-primary); }
+.sale-time { font-size: 0.8rem; color: var(--text-secondary); }
+.quantity-info { display: flex; align-items: baseline; gap: 8px; }
+.quantity { font-size: 1.5rem; font-weight: 700; color: var(--accent-green); }
+.unit { font-size: 0.9rem; color: var(--text-secondary); }
+
+/* ======================================================= */
+/* --- 5. ESTADOS DE CARGA Y VACÍO --- */
+/* ======================================================= */
+.loading-shade, .empty-state-container { padding: 80px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.loading-shade { color: var(--text-secondary); }
+.loading-shade p { margin-top: 16px; font-weight: 500; }
+.empty-state { text-align: center; }
+.empty-state mat-icon { font-size: 72px; width: 72px; height: 72px; margin-bottom: 16px; color: #cbd5e0; }
+.empty-state h2 { margin: 0 0 8px 0; color: var(--text-primary); font-size: 1.5rem; }
+.empty-state p { color: var(--text-secondary); max-width: 400px; margin-bottom: 16px; }
+
+/* ======================================================= */
+/* --- 6. DISEÑO RESPONSIVO --- */
+/* ======================================================= */
+@media (max-width: 768px) {
+  .sale-history-container { padding: 16px; }
+  .page-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .page-header h1 { font-size: 1.75rem; }
+  .filter-controls { flex-direction: column; align-items: stretch; }
+  .date-range-picker { flex-grow: 0; }
+  .stats-dashboard { gap: 16px; }
+  .stat-card { padding: 16px; }
+  .day-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .date-badge { position: static; transform: none; margin-bottom: 8px; align-self: flex-start; }
+  .day-summary { margin-left: 0; width: 100%; text-align: left; }
+  .sale-item-card { padding: 12px 16px; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .quantity-info { width: 100%; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 8px; }
 }
 
-mat-form-field {
-  width: 100%;
-  margin-bottom: 24px;
-
-  .mat-form-field-flex {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-  }
-
-  .mat-form-field-label {
-    color: #c0c0c0 !important;
-  }
-
-  input.mat-input-element {
-    color: #fff;
-  }
-
-  mat-icon {
-    color: #a0a0a0;
-  }
+/* ======================================================= */
+/* --- 7. ESTILOS PARA MODO OSCURO --- */
+/* ======================================================= */
+body.dark-mode .sale-item-card:hover {
+  border-color: #4b5563;
+  background-color: rgba(255, 255, 255, 0.02);
 }
-
-table.mat-table {
-  background-color: rgba(255, 255, 255, 0.03);
-  border-radius: 8px;
-  overflow: hidden;
-
-  th {
-    color: #00e1ff;
-    font-weight: 600;
-    background: #2b2c3f;
-  }
-
-  td {
-    color: #e0e0e0;
-  }
-
-  tr.mat-row:hover {
-    background-color: rgba(0, 225, 255, 0.05);
-  }
+body.dark-mode .quick-filters {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--border-color);
 }
-
-.mat-icon-button {
-  color: #00bcd4;
+body.dark-mode .quick-filters .mat-button-toggle {
+  color: var(--text-secondary);
 }
-
-mat-paginator {
-  color: #c0c0c0;
-
-  .mat-paginator-page-size {
-    font-size: 14px;
-  }
-
-  .mat-paginator-range-label {
-    font-size: 13px;
-  }
+body.dark-mode .date-range-picker {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+}
+body.dark-mode :host ::ng-deep .date-range-picker .mat-mdc-form-field-flex {
+  height: 40px; margin-top: -8px;
+}
+body.dark-mode :host ::ng-deep .date-range-picker .mat-mdc-floating-label {
+  top: 18px !important;
+  color: var(--text-secondary);
+}
+body.dark-mode :host ::ng-deep .date-range-picker .mat-mdc-input-element {
+  color: var(--text-primary) !important;
+}
+body.dark-mode .mat-datepicker-content {
+  background-color: #263143;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+}
+body.dark-mode .mat-calendar {
+  background-color: transparent;
+  color: var(--text-primary);
+}
+body.dark-mode .mat-calendar-body-label,
+body.dark-mode .mat-calendar-table-header,
+body.dark-mode .mat-calendar-body-cell-content,
+body.dark-mode .mat-datepicker-content .mat-datepicker-toggle .mat-icon-button,
+body.dark-mode .mat-calendar-arrow {
+  color: var(--text-primary);
+}
+body.dark-mode .mat-calendar-body-cell-content:not(.mat-calendar-body-disabled):hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+body.dark-mode .mat-calendar-body-selected {
+  background-color: var(--accent-green) !important;
+  color: white !important;
+}
+body.dark-mode .mat-calendar-body-disabled > .mat-calendar-body-cell-content {
+  color: var(--text-secondary) !important;
+  opacity: 0.5;
+}
+body.dark-mode .mat-datepicker-actions {
+  background-color: transparent !important;
+}
+body.dark-mode .mat-datepicker-actions .mat-mdc-button {
+  color: var(--accent-green) !important;
+}
+body.dark-mode .mat-datepicker-actions .mat-mdc-button:last-child {
+  color: var(--text-secondary) !important;
 }

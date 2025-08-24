@@ -1,0 +1,114 @@
+<app-navbar></app-navbar>
+
+<div class="product-container">
+  <div class="sticky-header">
+    <header class="page-header">
+      <h1>Gestión de Productos</h1>
+      <button mat-flat-button color="primary" (click)="onNew()">
+        <mat-icon>add_circle_outline</mat-icon>
+        Nuevo Producto
+      </button>
+    </header>
+
+    <div class="search-and-toggle-bar">
+      <div class="custom-search-wrapper">
+        <mat-icon class="search-icon">search</mat-icon>
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Buscar por nombre o descripción..."
+          (keyup)="applyFilter($event)"
+          #input>
+      </div>
+      <mat-slide-toggle
+        [checked]="showInactive"
+        (change)="toggleInactiveProducts()"
+        color="primary"
+        class="toggle-inactive">
+        Mostrar inactivos
+      </mat-slide-toggle>
+    </div>
+  </div>
+
+  <div class="loading-shade" *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+    <p>Cargando productos...</p>
+  </div>
+
+  <div class="content-wrapper" [hidden]="isLoading">
+    <div class="card-list-container">
+      <!-- CAMBIO: Iteramos sobre 'dataSource.connect()' para la correcta integración del paginador -->
+      <div *ngFor="let p of (dataSource.connect() | async)" class="product-card">
+        <header class="card-header">
+          <h2 class="product-name">{{ p.nombre }}</h2>
+          <mat-chip-listbox>
+            <mat-chip [ngClass]="p.estado ? 'chip-active' : 'chip-inactive'" selected>
+              {{ p.estado ? 'Activo' : 'Inactivo' }}
+            </mat-chip>
+          </mat-chip-listbox>
+        </header>
+
+        <div class="card-body">
+          <div class="info-item">
+            <mat-icon>description</mat-icon>
+            <span>{{ p.descripcion || 'Sin descripción' }}</span>
+          </div>
+          <div class="info-grid">
+            <div class="info-item">
+              <mat-icon>inventory_2</mat-icon>
+              <span>Stock: <strong>{{ p.stock }} unidades</strong></span>
+            </div>
+            <div class="info-item">
+              <mat-icon>sell</mat-icon>
+              <span>Precio: <strong>{{ p.precio | currency:'S/ ' }}</strong></span>
+            </div>
+            <div class="info-item">
+              <mat-icon>monetization_on</mat-icon>
+              <span>Costo: <strong>{{ p.costo | currency:'S/ ' }}</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <footer class="card-footer">
+          <!-- Botón para Editar Producto -->
+          <button mat-icon-button matTooltip="Editar producto" (click)="onEdit(p.id!)">
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <!--
+            ===================================================
+            NUEVO BOTÓN PARA VER HISTORIAL DE INVENTARIO
+            ===================================================
+          -->
+          <a mat-icon-button matTooltip="Ver historial de inventario"
+             [routerLink]="['/inventario/historial', p.id!]">
+            <mat-icon>history</mat-icon>
+          </a>
+          <!-- =================================================== -->
+
+          <!-- Botones condicionales para Activar/Desactivar -->
+          <button *ngIf="p.estado" mat-icon-button color="warn" matTooltip="Desactivar producto" (click)="onDeactivate(p.id!)">
+            <mat-icon>toggle_off</mat-icon>
+          </button>
+          <button *ngIf="!p.estado" mat-icon-button color="primary" matTooltip="Activar producto" (click)="onActivate(p.id!)">
+            <mat-icon>toggle_on</mat-icon>
+          </button>
+        </footer>
+      </div>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[6, 12, 24]" showFirstLastButtons
+                   aria-label="Selecciona la página de productos">
+    </mat-paginator>
+  </div>
+
+  <div class="empty-state-container" *ngIf="!isLoading && dataSource.data.length === 0">
+      <div class="empty-state">
+        <mat-icon>inbox</mat-icon>
+        <h2>No se encontraron productos</h2>
+        <p *ngIf="!showInactive">Intenta incluyendo los productos inactivos o crea uno nuevo.</p>
+        <p *ngIf="showInactive">No hay productos registrados en el sistema.</p>
+        <button mat-stroked-button color="primary" (click)="onNew()">Crear primer producto</button>
+      </div>
+  </div>
+</div>

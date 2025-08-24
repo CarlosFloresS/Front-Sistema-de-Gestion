@@ -11,39 +11,56 @@
     </mat-card-header>
 
     <mat-card-content>
-      <form (ngSubmit)="submit()" class="login-form" autocomplete="off">
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-icon matPrefix color="primary"></mat-icon>
+      <form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form" autocomplete="off">
+
+        <!-- Campo de Usuario -->
+        <mat-form-field appearance="outline" class="full-width">
           <mat-label>Usuario</mat-label>
+          <mat-icon matPrefix color="primary">person_outline</mat-icon>
           <input
             matInput
-            [(ngModel)]="username"
-            name="username"
+            formControlName="username"
             required
             autocomplete="username"
           />
+          <mat-error *ngIf="username?.hasError('required')">
+            El usuario es requerido.
+          </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-icon matPrefix color="primary"></mat-icon>
+        <!-- Campo de Contraseña -->
+        <mat-form-field appearance="outline" class="full-width">
           <mat-label>Contraseña</mat-label>
+          <mat-icon matPrefix color="primary">lock_outline</mat-icon>
           <input
             matInput
-            type="password"
-            [(ngModel)]="password"
-            name="password"
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
             required
             autocomplete="current-password"
           />
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="password?.hasError('required')">
+            La contraseña es requerida.
+          </mat-error>
         </mat-form-field>
 
+        <!-- Mensaje de Error General -->
+        <div *ngIf="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Botón de Envío -->
         <button
           mat-flat-button
           color="primary"
           class="full-width submit-btn"
-          [disabled]="!username || !password"
+          [disabled]="loginForm.invalid || loading"
         >
-          Entrar
+          <span *ngIf="!loading">Entrar</span>
+          <mat-spinner *ngIf="loading" [diameter]="24"></mat-spinner>
         </button>
       </form>
     </mat-card-content>

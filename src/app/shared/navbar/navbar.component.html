@@ -1,1 +1,130 @@
-<p>navbar works!</p>
+<mat-toolbar class="navbar-custom" color="primary">
+  <!-- 1. Logo y Nombre de la App -->
+  <a routerLink="/" class="navbar-brand">
+    <mat-icon>storefront</mat-icon>
+    <span>Mi Negocio</span>
+  </a>
+
+  <!-- 2. Links para Escritorio (se ocultan en móvil) -->
+  <div class="nav-links-desktop">
+    <a
+      *ngFor="let link of navLinks"
+      mat-button
+      [routerLink]="link.path"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: false }"
+    >
+      <mat-icon>{{ link.icon }}</mat-icon>
+      <span>{{ link.label }}</span>
+    </a>
+  </div>
+
+  <span class="spacer"></span>
+
+  <!-- 3. Botones de Acción (Tema y Logout) -->
+  <div class="user-actions">
+    <!-- Botón para cambiar de tema -->
+    <button
+      mat-icon-button
+      [matTooltip]="themeService.isDark() ? 'Activar modo claro' : 'Activar modo oscuro'"
+      [attr.aria-label]="themeService.isDark() ? 'Activar modo claro' : 'Activar modo oscuro'"
+      (click)="themeService.toggleTheme()"
+      class="theme-toggle-btn"
+    >
+      <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+
+    <!-- Botón de Logout (solo desktop) -->
+    <button
+      mat-icon-button
+      matTooltip="Cerrar sesión"
+      aria-label="Cerrar sesión"
+      (click)="salir()"
+      class="logout-btn desktop-only"
+    >
+      <mat-icon>logout</mat-icon>
+    </button>
+
+    <!-- Botón Hamburguesa (solo móvil) -->
+    <button
+      mat-icon-button
+      (click)="toggleMenu()"
+      class="hamburger-menu"
+      aria-label="Abrir menú de navegación"
+      [attr.aria-expanded]="isMenuOpen"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
+
+<!-- 5. Menú Deslizable para Móvil -->
+<div
+  class="mobile-menu-overlay"
+  *ngIf="isMenuOpen"
+  (click)="toggleMenu()"
+  [@fadeAnimation]
+>
+  <nav
+    class="mobile-menu-content"
+    (click)="$event.stopPropagation()"
+    [@slideAnimation]
+    role="navigation"
+    aria-label="Menú de navegación móvil"
+  >
+    <!-- Header del menú móvil -->
+    <div class="mobile-menu-header">
+      <div class="mobile-header-info">
+        <mat-icon class="mobile-logo">storefront</mat-icon>
+        <h3>Mi Negocio</h3>
+      </div>
+      <button
+        mat-icon-button
+        (click)="toggleMenu()"
+        aria-label="Cerrar menú"
+        class="close-menu-btn"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Enlaces de navegación -->
+    <div class="mobile-nav-links">
+      <a
+        *ngFor="let link of navLinks; trackBy: trackByPath"
+        class="mobile-link"
+        [routerLink]="link.path"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="toggleMenu()"
+      >
+        <mat-icon>{{ link.icon }}</mat-icon>
+        <span>{{ link.label }}</span>
+        <mat-icon class="nav-arrow">chevron_right</mat-icon>
+      </a>
+    </div>
+
+    <!-- Acciones del usuario en móvil -->
+    <div class="mobile-user-actions">
+      <!-- Botón de tema en móvil -->
+      <button
+        class="mobile-action-btn theme-btn"
+        (click)="themeService.toggleTheme()"
+        [attr.aria-label]="themeService.isDark() ? 'Activar modo claro' : 'Activar modo oscuro'"
+      >
+        <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        <span>{{ themeService.isDark() ? 'Modo claro' : 'Modo oscuro' }}</span>
+      </button>
+
+      <!-- Botón de logout en móvil -->
+      <button
+        class="mobile-action-btn logout-btn"
+        (click)="salir(); toggleMenu()"
+        aria-label="Cerrar sesión"
+      >
+        <mat-icon>logout</mat-icon>
+        <span>Cerrar sesión</span>
+      </button>
+    </div>
+  </nav>
+</div>

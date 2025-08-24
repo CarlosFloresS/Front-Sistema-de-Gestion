@@ -1,4 +1,55 @@
 /* You can add global styles to this file, and also import other style files */
+/* Importa un tema pre-construido de Angular Material. Esto es ESENCIAL. */
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Variables CSS para colores y temas */
+/* --- TEMA CLARO (POR DEFECTO) --- */
+body {
+  /* Paleta de colores para el modo claro */
+  --background-color: #f0f4f8;
+  --card-background: #ffffff;
+  --sidebar-background: #f1f5f9;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+
+  /* Colores de Acento */
+  --accent-green: #10b981;
+  --accent-green-dark: #059669;
+  --accent-red: #c53030;
+  --accent-blue: #4f46e5;
+
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  /* Transición suave al cambiar de tema */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --- TEMA OSCURO --- */
+/* Cuando el ThemeService añade esta clase al body, estas variables sobreescriben las de arriba */
+body.dark-mode {
+  /* Paleta de colores para el modo oscuro */
+  --background-color: #111827;      /* Gris casi negro */
+  --card-background: #1f2937;       /* Gris más claro para la tarjeta */
+  --sidebar-background: #111827;   /* Mismo que el fondo */
+  --text-primary: #f9fafb;          /* Blanco pálido */
+  --text-secondary: #9ca3af;       /* Gris claro */
+  --border-color: #374151;        /* Borde oscuro */
+}
+
+/* También puedes añadir estilos globales para los componentes de Material en modo oscuro */
+body.dark-mode .mat-mdc-paginator {
+  background-color: var(--card-background) !important;
+  color: var(--text-secondary) !important;
+}
+body.dark-mode .mat-mdc-menu-panel {
+  background-color: var(--card-background) !important;
+}
+body.dark-mode .mat-mdc-menu-item {
+  color: var(--text-primary) !important;
+}

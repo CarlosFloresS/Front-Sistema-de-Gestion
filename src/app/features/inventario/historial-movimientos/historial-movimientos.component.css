@@ -1,0 +1,208 @@
+/* ======================================================= */
+/* --- 1. PALETA DE COLORES Y VARIABLES GLOBALES --- */
+/* ======================================================= */
+:host {
+  /* --- MODO CLARO (Default) --- */
+  --brand-color: #2563eb;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --warning-color: #f59e0b;
+  --info-color: #4b5563;
+
+  --bg-page: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-hover: #f8fafc;
+
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+
+  --border-default: #e2e8f0;
+
+  --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+  --transition-speed: 0.2s;
+}
+
+/* ======================================================= */
+/* --- 2. LAYOUT DE PÁGINA Y CABECERA --- */
+/* ======================================================= */
+:host {
+  display: block;
+  background-color: var(--bg-page);
+  min-height: calc(100vh - 64px);
+  transition: background-color var(--transition-speed) ease-in-out;
+}
+
+.historial-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.page-header .mat-icon-button {
+  width: 48px;
+  height: 48px;
+  color: var(--text-secondary);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-subtle);
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-content h1 {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.product-name {
+  color: var(--text-primary);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.current-stock {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-top: 8px;
+}
+.current-stock strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ======================================================= */
+/* --- 3. TARJETA Y TABLA DE HISTORIAL --- */
+/* ======================================================= */
+.table-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-card);
+  padding: 8px; /* Espacio para que la tabla respire */
+  transition: all var(--transition-speed) ease-in-out;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.mat-table {
+  width: 100%;
+  background-color: transparent;
+}
+
+.mat-header-cell {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--border-default);
+}
+
+.mat-cell {
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-default);
+  padding: 16px;
+}
+
+.mat-row {
+  transition: background-color var(--transition-speed) ease-in-out;
+}
+.mat-row:hover {
+  background-color: var(--bg-hover);
+}
+.mat-row:last-of-type .mat-cell {
+  border-bottom: none;
+}
+
+.align-right {
+  text-align: right;
+  justify-content: flex-end; /* Para flex containers si es necesario */
+}
+
+/* Estilos de Celdas Específicas */
+.quantity-cell {
+  font-weight: 700;
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 1rem;
+}
+.quantity-cell.positive { color: var(--success-color); }
+.quantity-cell.negative { color: var(--danger-color); }
+
+/* Chips para tipo de movimiento - Estilo Mejorado */
+.mat-mdc-chip {
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+  height: auto !important;
+  min-height: 28px !important;
+}
+/* Entradas (positivas) */
+.chip-entrada_produccion, .chip-ajuste_entrada { background-color: #dcfce7; color: #166534; }
+/* Salidas (negativas) */
+.chip-salida_venta { background-color: #e5e7eb; color: #374151; }
+.chip-salida_merma { background-color: #fee2e2; color: #991b1b; }
+.chip-ajuste_salida { background-color: #ffedd5; color: #9a3412; }
+
+
+/* ======================================================= */
+/* --- 4. ESTADOS DE CARGA Y VACÍO --- */
+/* ======================================================= */
+.loading-shade, .empty-state {
+  padding: 80px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.loading-shade { color: var(--text-secondary); }
+.loading-shade p { margin-top: 16px; font-weight: 500; }
+.empty-state mat-icon { font-size: 64px; width: 64px; height: 64px; margin-bottom: 24px; color: #d1d5db; }
+.empty-state h2 { margin: 0 0 8px 0; color: var(--text-primary); font-size: 1.5rem; }
+.empty-state p { color: var(--text-secondary); }
+
+/* ======================================================= */
+/* --- 5. MODO OSCURO --- */
+/* ======================================================= */
+body.dark-mode :host {
+  --bg-page: #020617;
+  --bg-card: #0f172a;
+  --bg-hover: #1e293b;
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+
+  --border-default: #334155;
+
+  --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+}
+
+body.dark-mode .empty-state mat-icon {
+  color: var(--border-default);
+}
+
+/* Chips para modo oscuro - Alto Contraste */
+body.dark-mode .chip-entrada_produccion,
+body.dark-mode .chip-ajuste_entrada { background-color: #052e16; color: #4ade80; }
+
+body.dark-mode .chip-salida_venta { background-color: #374151; color: #d1d5db; }
+body.dark-mode .chip-salida_merma { background-color: #450a0a; color: #f87171; }
+body.dark-mode .chip-ajuste_salida { background-color: #431407; color: #fb923c; }

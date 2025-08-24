@@ -1,28 +1,26 @@
-import { Injectable } from '@angular/core';
+// src/app/features/mermas/merma.service.ts
+
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { MermaRequest, MermaResponse } from '@core/models';
 
-export interface Merma {
-  id?:        number;
-  productoId: number;
-  fecha:      string;  // ISO
-  cantidad:   number;
-  motivo:     string;
-}
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class MermaService {
-  private baseUrl = 'http://localhost:8080/api/mermas';
+  private http = inject(HttpClient);
+  private apiUrl = '/api/mermas';
 
-  constructor(private http: HttpClient) {}
-
-  /** Listar todas las mermas */
-  list(): Observable<Merma[]> {
-    return this.http.get<Merma[]>(this.baseUrl);
+  /** Lista todas las mermas registradas */
+  listar(): Observable<MermaResponse[]> {
+    return this.http.get<MermaResponse[]>(this.apiUrl);
   }
 
-  /** Registrar nueva merma */
-  create(dto: Merma): Observable<Merma> {
-    return this.http.post<Merma>(this.baseUrl, dto);
+  /** Registra una nueva merma.
+   *  NOTA: El ID del operario se envía en una cabecera, gestionado por un interceptor.
+   */
+  registrar(request: MermaRequest): Observable<MermaResponse> {
+    return this.http.post<MermaResponse>(this.apiUrl, request);
   }
 }

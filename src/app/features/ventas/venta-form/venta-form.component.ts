@@ -1,120 +1,213 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule }               from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  ValidationErrors
-} from '@angular/forms';
-import { RouterModule, Router }       from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray, AbstractControl } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { finalize, Observable, startWith, map, forkJoin } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { animate, style, transition, trigger } from '@angular/animations';
 
-import { MatCardModule }              from '@angular/material/card';
-import { MatFormFieldModule }         from '@angular/material/form-field';
-import { MatInputModule }             from '@angular/material/input';
-import { MatAutocompleteModule }      from '@angular/material/autocomplete';
-import { MatButtonModule }            from '@angular/material/button';
+// Material Imports
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCardModule } from '@angular/material/card';
 
-import { NavbarComponent }            from '../../../shared/navbar/navbar.component';
-import { VentaService, CreateVenta }  from '../venta.service';
-import { ProductService }             from '../../productos/product.service';
-import { Producto }                   from '../../../core/models';
+// Componentes y Servicios
+import { NavbarComponent } from '@shared/navbar/navbar.component';
+import { ProductService } from '../../productos/product.service';
+import { VentaService } from '../venta.service';
+import { ProductoResponse, VentaRequest, VentaResponse } from '@core/models';
 
-import { Observable, startWith, map } from 'rxjs';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+// Validador personalizado para asegurar que se selecciona un objeto
+export function requireMatchObject(control: AbstractControl): { [key: string]: any } | null {
+  const value = control.value;
+  if (value && typeof value === 'string') {
+    return { requireMatch: true };
+  }
+  return null;
+}
+
+// Validador personalizado para el stock
+function stockValidator(control: AbstractControl): { [key: string]: any } | null {
+  const cantidad = control.get('cantidad')?.value;
+  const producto = control.get('producto')?.value as ProductoResponse;
+  if (producto && cantidad > producto.stock) {
+    return { exceedStock: { available: producto.stock } };
+  }
+  return null;
+}
 
 @Component({
   standalone: true,
   selector: 'app-venta-form',
   templateUrl: './venta-form.component.html',
-  styleUrls: ['./venta-form.component.scss'],
+  styleUrls: ['./venta-form.component.css'],
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatButtonModule,
-    NavbarComponent
+    CommonModule, ReactiveFormsModule, RouterModule, NavbarComponent,
+    MatFormFieldModule, MatInputModule, MatButtonModule, MatSnackBarModule,
+    MatProgressSpinnerModule, MatIconModule, MatAutocompleteModule, MatTableModule,
+    MatTooltipModule, MatCardModule
+  ],
+  animations: [
+    trigger('rowsAnimation', [
+      transition('void => *', [
+        style({ height: '0', opacity: '0', transform: 'translateY(-10px)' }),
+        animate('300ms ease-out', style({ height: '*', opacity: '1', transform: 'translateY(0)' }))
+      ])
+    ])
   ]
 })
 export class VentaFormComponent implements OnInit {
-  form!: FormGroup;
-  allProducts: Producto[] = [];
-  filteredProducts$!: Observable<Producto[]>;
+  ventaForm!: FormGroup;
+  itemForm!: FormGroup;
+  isLoading = false;
 
-  private fb      = inject(FormBuilder);
-  private ventaSvc= inject(VentaService);
-  private prodSvc = inject(ProductService);
-  private router  = inject(Router);
+  allProducts: ProductoResponse[] = [];
+  filteredProducts$!: Observable<ProductoResponse[]>;
+
+  dataSource = new MatTableDataSource<AbstractControl>();
+  displayedColumns: string[] = ['producto', 'cantidad', 'precio', 'subtotal', 'acciones'];
+
+  private fb = inject(FormBuilder);
+  private ventaService = inject(VentaService);
+  private productSvc = inject(ProductService);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
 
   ngOnInit(): void {
-    // 1) Initialize form
-    this.form = this.fb.group({
-      producto: [null as Producto | null, Validators.required],
-      cantidad: [1, [Validators.required, Validators.min(1), this.stockValidator.bind(this)]]
+    this.ventaForm = this.fb.group({
+      detalles: this.fb.array([], [Validators.required, Validators.minLength(1)])
     });
 
-    // 2) Load only products with stock > 0
-    this.prodSvc.list().subscribe(list => {
-      this.allProducts = list.filter(p => p.stock > 0);
+    this.itemForm = this.fb.group({
+      producto: [null, [Validators.required, requireMatchObject]],
+      cantidad: [1, [Validators.required, Validators.min(1)]]
+    }, { validators: stockValidator });
 
-      // 3) Set up the autocomplete filter
-      this.filteredProducts$ = this.form
-        .get('producto')!
-        .valueChanges
-        .pipe(
-          startWith<Producto | string>(''),
-          map(val => typeof val === 'string' ? val : val?.nombre || ''),
-          map(name =>
-            this.allProducts.filter(p =>
-              p.nombre.toLowerCase().includes(name.toLowerCase())
-            )
-          )
-        );
+    this.productSvc.listarActivos().subscribe(prods => {
+      this.allProducts = prods.filter(p => p.stock > 0);
+      this.filteredProducts$ = this.itemForm.get('producto')!.valueChanges.pipe(
+        startWith(''),
+        map(value => (typeof value === 'string' ? value : value?.nombre)),
+        map(name => (name ? this._filter(name) : this.allProducts.slice()))
+      );
+    });
+
+    this.detalles.valueChanges.subscribe(() => {
+      this.dataSource.data = this.detalles.controls;
     });
   }
 
-  /** Mostrar nombre (y stock) en el input cuando el value es un Producto */
-  displayFn(prod?: Producto): string {
-    return prod ? `${prod.nombre} (Disp: ${prod.stock})` : '';
+  get detalles(): FormArray {
+    return this.ventaForm.get('detalles') as FormArray;
   }
 
-  /** Al seleccionar del dropdown parcheamos el control y revalidamos cantidad */
-  onProductSelected(event: MatAutocompleteSelectedEvent) {
-    const prod: Producto = event.option.value;
-    this.form.patchValue({ producto: prod });
-    this.form.get('cantidad')!.updateValueAndValidity();
+  get totalVenta(): number {
+    return this.detalles.controls
+      .reduce((acc, control) => acc + (control.value.producto.precio * control.value.cantidad), 0);
   }
 
-  /** Validator que impide cantidad > stock */
-  private stockValidator(ctrl: AbstractControl): ValidationErrors | null {
-    const prod: Producto = this.form?.get('producto')?.value;
-    if (prod && ctrl.value > prod.stock) {
-      return { exceedStock: true };
+  private _filter(value: string): ProductoResponse[] {
+    const filterValue = value.toLowerCase();
+    return this.allProducts.filter(prod => prod.nombre.toLowerCase().includes(filterValue));
+  }
+
+  displayFn(product: ProductoResponse): string {
+    return product?.nombre ?? '';
+  }
+
+  addItem(): void {
+    if (this.itemForm.invalid) {
+        this.itemForm.markAllAsTouched();
+        return;
     }
-    return null;
+
+    const productoSeleccionado = this.itemForm.value.producto as ProductoResponse;
+    if (typeof productoSeleccionado !== 'object' || productoSeleccionado === null) {
+      this.snackBar.open('Por favor, selecciona un producto válido de la lista.', 'Cerrar', { duration: 3000 });
+      return;
+    }
+    const cantidadAAgregar = this.itemForm.value.cantidad;
+
+    const itemExistente = this.detalles.controls.find(
+      control => control.value.producto.id === productoSeleccionado.id
+    );
+
+    if (itemExistente) {
+      const cantidadActual = itemExistente.value.cantidad;
+      const nuevaCantidad = cantidadActual + cantidadAAgregar;
+
+      if (nuevaCantidad > productoSeleccionado.stock) {
+        this.snackBar.open(
+          `Stock insuficiente. Disponibles: ${productoSeleccionado.stock}, en carrito: ${cantidadActual}.`,
+          'Cerrar', { duration: 4000 }
+        );
+        return;
+      }
+
+      itemExistente.get('cantidad')?.setValue(nuevaCantidad);
+      this.snackBar.open(`Cantidad de "${productoSeleccionado.nombre}" actualizada`, 'Cerrar', { duration: 2000 });
+    } else {
+      const nuevoDetalle = this.fb.group({
+        producto: [productoSeleccionado, Validators.required],
+        cantidad: [cantidadAAgregar, Validators.required]
+      });
+      this.detalles.push(nuevoDetalle);
+    }
+
+    this.itemForm.reset({ cantidad: 1 });
+    this.itemForm.get('producto')?.setValue('');
+  }
+
+  removeItem(index: number): void {
+    this.detalles.removeAt(index);
   }
 
   submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
+    if (this.ventaForm.invalid) {
+        this.ventaForm.markAllAsTouched();
+        return;
     }
-    const prod: Producto = this.form.value.producto;
-    const cantidad: number = this.form.value.cantidad;
 
-    const dto: CreateVenta = {
-      productoId: prod.id!,
-      cantidad
-    };
+    this.isLoading = true;
+    this.ventaForm.disable();
 
-    this.ventaSvc.create(dto).subscribe({
-      next: () => this.router.navigate(['/ventas']),
-      error: err => alert('Error al registrar venta: ' + err.statusText)
+    const itemsParaVender = this.detalles.getRawValue();
+
+    const requests: Observable<VentaResponse>[] = itemsParaVender.map((item: any) => {
+      const ventaRequest: VentaRequest = {
+        productoId: item.producto.id,
+        cantidad: item.cantidad
+      };
+      return this.ventaService.registrar(ventaRequest);
+    });
+
+    forkJoin(requests).pipe(
+      finalize(() => {
+        this.isLoading = false;
+        this.ventaForm.enable();
+      })
+    ).subscribe({
+      next: (responses) => {
+        this.snackBar.open(`${responses.length} tipo(s) de producto(s) vendidos con éxito`, 'Cerrar', {
+          duration: 3000,
+          panelClass: ['snackbar-success']
+        });
+        this.router.navigate(['/ventas']);
+      },
+      error: (err: HttpErrorResponse) => {
+        const errorMessage = err.error?.message || 'Una de las ventas falló. Revisa el stock y vuelve a intentarlo.';
+        this.snackBar.open(errorMessage, 'Cerrar', {
+          duration: 5000,
+          panelClass: ['snackbar-error']
+        });
+      }
     });
   }
 
